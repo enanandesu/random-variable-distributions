@@ -1,0 +1,13 @@
+{
+  "name": "NyarukOoO/random-variable-distributions",
+  "version": "0.1.0",
+  "deps": {
+    "Luna-Flow/linear-algebra": "0.1.6-beta-3"
+  },
+  "readme": "README.md",
+  "repository": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "description": "",
+  "source": "src"
+}
