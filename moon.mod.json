@@ -2,12 +2,13 @@
   "name": "NyarukOoO/random-variable-distributions",
   "version": "0.1.0",
   "deps": {
-    "Luna-Flow/linear-algebra": "0.1.6-beta-3"
+    "Luna-Flow/linear-algebra": "0.1.6-beta-3",
+    "enanandesu/special-mathematical-functions": "0.1.0"
   },
   "readme": "README.md",
-  "repository": "",
+  "repository": "https://github.com/enanandesu/random-variable-distributions",
   "license": "Apache-2.0",
   "keywords": [],
-  "description": "",
+  "description": "随机变量分布",
   "source": "src"
 }
