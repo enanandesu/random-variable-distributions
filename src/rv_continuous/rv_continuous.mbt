@@ -1,6 +1,6 @@
 ///|
 pub trait RVContinuous {
-  rvs(Self, size : Int) -> Array[Double]
+  rvs(Self, size : Int, seed : Bytes?) -> Array[Double]
   pdf(Self, x : Double) -> Double
   cdf(Self, x : Double) -> Double
   ppf(Self, q : Double) -> Double

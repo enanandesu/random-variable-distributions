@@ -3,6 +3,10 @@
     {
       "path": "enanandesu/special-mathematical-functions",
       "alias": "sp"
+    },
+    {
+      "path": "Kaida-Amethyst/math",
+      "alias": "kmath"
     }
   ]
 }

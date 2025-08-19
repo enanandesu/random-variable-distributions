@@ -10,10 +10,13 @@ pub fn Normal::new(loc~ : Double = 0.0, scale~ : Double = 1.0) -> Normal {
 }
 
 ///|
-impl RVContinuous for Normal with rvs(self, size) {
+impl RVContinuous for Normal with rvs(self, size, seed) {
   let samples = Array::new(capacity=size)
   let mut i = 0
-  let rdm = @random.Rand::new()
+  let rdm = match seed {
+    None => @random.Rand::new()
+    Some(val) => @random.Rand::chacha8(seed=val)
+  }
   while i < size {
     let u1 = rdm.double()
     let u2 = rdm.double()
@@ -42,7 +45,7 @@ impl RVContinuous for Normal with pdf(self, x) {
 ///|
 impl RVContinuous for Normal with cdf(self, x) {
   let z = (x - self.loc) / self.scale
-  0.5 * (1.0 + @sp.erf(z / 2.0.sqrt()))
+  0.5 * (1.0 + @kmath.erf(z / 2.0.sqrt()))
 }
 
 ///|
@@ -50,7 +53,7 @@ impl RVContinuous for Normal with ppf(self, q) {
   if q <= 0.0 || q >= 1.0 {
     abort("q must be in (0, 1)")
   }
-  self.loc + self.scale * 2.0.sqrt() * @sp.erfinv(2.0 * q - 1.0)
+  self.loc + self.scale * 2.0.sqrt() * @kmath.erfinv(2.0 * q - 1.0)
 }
 
 ///|
@@ -177,4 +180,11 @@ fn double_factorial(n : Int) -> Int {
   } else {
     n * double_factorial(n - 2)
   }
+}
+
+///|
+fn derive_seed(seed : Bytes) -> Bytes {
+  // 每次调用都会吐出一个新的 32 字节种子
+  let r = @random.Rand::chacha8(seed~)
+  Bytes::makei(32, _ => r.uint(limit=256U).to_byte())
 }

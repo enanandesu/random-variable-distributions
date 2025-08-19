@@ -1,1 +1,1 @@
-# NyarukOoO/random-variable-distributions
+# enanandesu/random-variable-distributions
