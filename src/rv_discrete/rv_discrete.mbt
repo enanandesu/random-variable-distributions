@@ -9,7 +9,6 @@ pub trait RVDiscrete {
   logpmf(Self, k : Double) -> Double
   logcdf(Self, x : Double) -> Double
   logsf(Self, x : Double) -> Double
-  moment(Self, n : Int) -> Double
   entropy(Self) -> Double
   median(Self) -> Double
   mean(Self) -> Double

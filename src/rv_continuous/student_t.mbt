@@ -8,8 +8,8 @@ struct StudentT {
 ///|
 pub fn StudentT::new(
   df : Double,
-  loc~ : Double = 0.0,
-  scale~ : Double = 1.0,
+  loc? : Double = 0.0,
+  scale? : Double = 1.0,
 ) -> StudentT {
   { df, loc, scale }
 }
@@ -223,14 +223,5 @@ fn standard_t_moment(n : Int, df : Double) -> Double {
     @kmath.gamma(df / 2.0 - k) *
     @kmath.gamma(k + 0.5) /
     (@math.PI.sqrt() * @kmath.gamma(df / 2.0))
-  }
-}
-
-///|
-fn factorial(n : Int) -> Int {
-  if n <= 1 {
-    1
-  } else {
-    n * factorial(n - 1)
   }
 }

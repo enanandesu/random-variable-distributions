@@ -86,8 +86,6 @@ test "Binom statistical moments" {
   // Test kurtosis = (1 - 6p(1-p)) / (np(1-p))
   let expected_kurt = (1.0 - 6.0 * 0.3 * 0.7) / (10.0 * 0.3 * 0.7)
   assert_true((binom.kurt() - expected_kurt).abs() < 1.0e-10)
-  let moment_4 = 217.164
-  assert_true(binom.moment(4) - moment_4 < 1.0e-10)
 }
 
 ///|

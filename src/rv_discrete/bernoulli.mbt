@@ -5,7 +5,7 @@ struct Bernoulli {
 }
 
 ///|
-pub fn Bernoulli::new(p : Double, loc~ : Double = 0.0) -> Bernoulli {
+pub fn Bernoulli::new(p : Double, loc? : Double = 0.0) -> Bernoulli {
   { p, loc }
 }
 
@@ -89,15 +89,6 @@ impl RVDiscrete for Bernoulli with logcdf(self, x) {
 ///|
 impl RVDiscrete for Bernoulli with logsf(self, x) {
   @math.ln(self.sf(x))
-}
-
-///|
-impl RVDiscrete for Bernoulli with moment(self, n) {
-  if n < 0 {
-    abort("moment order must be non-negative")
-  }
-  self.loc.pow(n.to_double()) * (1.0 - self.p) +
-  self.p * (1.0 + self.loc).pow(n.to_double())
 }
 
 ///|

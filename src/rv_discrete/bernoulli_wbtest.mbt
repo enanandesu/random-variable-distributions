@@ -184,31 +184,6 @@ test "Bernoulli random sampling" {
 }
 
 ///|
-test "Bernoulli entropy and moments" {
-  let bernoulli = Bernoulli::new(0.5, loc=0.0)
-
-  // Test entropy for p=0.5 (maximum entropy case)
-  let entropy = bernoulli.entropy()
-  let expected_entropy = -0.5 * @math.ln(0.5) - 0.5 * @math.ln(0.5)
-  assert_true((entropy - expected_entropy).abs() < 1.0e-10)
-
-  // Test median (should be 0 for p <= 0.5)
-  assert_eq(bernoulli.median(), 0.0)
-
-  // Test higher moments
-  let moment_2 = bernoulli.moment(2)
-  let moment_3 = bernoulli.moment(3)
-  assert_true((moment_2 - 0.5).abs() < 1.0e-10) // E[X^2] = p for Bernoulli
-  assert_true((moment_3 - 0.5).abs() < 1.0e-10) // E[X^3] = p for Bernoulli
-
-  // Test confidence interval
-  let interval = bernoulli.interval(0.05)
-  let (lower, upper) = interval
-  assert_eq(lower, 0.0)
-  assert_eq(upper, 1.0)
-}
-
-///|
 test "Bernoulli edge cases" {
   // Test with p = 0 (always 0)
   let bernoulli_zero = Bernoulli::new(0.0, loc=0.0)

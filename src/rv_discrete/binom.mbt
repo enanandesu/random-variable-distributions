@@ -6,7 +6,7 @@ struct Binom {
 }
 
 ///|
-pub fn Binom::new(n : Int, p : Double, loc~ : Double = 0.0) -> Binom {
+pub fn Binom::new(n : Int, p : Double, loc? : Double = 0.0) -> Binom {
   { n, p, loc }
 }
 
@@ -40,11 +40,11 @@ fn combination(n : Int, k : Int) -> Int {
     n
   } else {
     let k_opt = if k > n - k { n - k } else { k }
-    let mut result = 1
+    let mut result = 1.0
     for i = 0; i < k_opt; i = i + 1 {
-      result = result * (n - i) / (i + 1)
+      result = result * (n - i).to_double() / (i + 1).to_double()
     }
-    result
+    result.round().to_int()
   }
 }
 
@@ -129,19 +129,6 @@ impl RVDiscrete for Binom with logcdf(self, x) {
 ///|
 impl RVDiscrete for Binom with logsf(self, x) {
   @math.ln(self.sf(x))
-}
-
-///|
-impl RVDiscrete for Binom with moment(self, n) {
-  if n < 0 {
-    abort("moment order must be non-negative")
-  }
-  let mut sum = 0.0
-  for k in 0..=self.n {
-    let x = self.loc + k.to_double()
-    sum += x.pow(n.to_double()) * self.pmf(x)
-  }
-  sum
 }
 
 ///|
