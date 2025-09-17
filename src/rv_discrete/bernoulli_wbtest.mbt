@@ -1,4 +1,14 @@
 ///|
+test "panic Bernoulli::new/invalid_p_low" {
+  ignore(Bernoulli::new(-0.1))
+}
+
+///|
+test "panic Bernoulli::new/invalid_p_high" {
+  ignore(Bernoulli::new(1.1))
+}
+
+///|
 test "Bernoulli creation and basic properties" {
   let bernoulli = Bernoulli::new(0.7, loc=3.0)
 

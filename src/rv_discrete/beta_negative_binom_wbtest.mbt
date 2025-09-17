@@ -1,4 +1,19 @@
 ///|
+test "panic BetaNegativeBinom::new/invalid_n_nonpositive" {
+  ignore(BetaNegativeBinom::new(0, 1.0, 1.0))
+}
+
+///|
+test "panic BetaNegativeBinom::new/invalid_a_nonpositive" {
+  ignore(BetaNegativeBinom::new(1, 0.0, 1.0))
+}
+
+///|
+test "panic BetaNegativeBinom::new/invalid_b_nonpositive" {
+  ignore(BetaNegativeBinom::new(1, 1.0, 0.0))
+}
+
+///|
 test "BetaNegativeBinom::pmf" {
   let dist = BetaNegativeBinom::new(5, 2.0, 3.0, loc=0.0)
   // Test valid integer values - should return positive probabilities

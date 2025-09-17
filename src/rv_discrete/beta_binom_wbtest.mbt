@@ -1,4 +1,19 @@
 ///|
+test "panic BetaBinom::new/invalid_n_negative" {
+  ignore(BetaBinom::new(-1, 1.0, 1.0))
+}
+
+///|
+test "panic BetaBinom::new/invalid_a_nonpositive" {
+  ignore(BetaBinom::new(1, 0.0, 1.0))
+}
+
+///|
+test "panic BetaBinom::new/invalid_b_nonpositive" {
+  ignore(BetaBinom::new(1, 1.0, 0.0))
+}
+
+///|
 test "BetaBinom::new creates valid distribution" {
   let bb = BetaBinom::new(10, 2.0, 3.0, loc=0.0)
   assert_eq(bb.n, 10)

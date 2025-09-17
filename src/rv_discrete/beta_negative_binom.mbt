@@ -13,6 +13,15 @@ pub fn BetaNegativeBinom::new(
   b : Double,
   loc? : Double = 0.0,
 ) -> BetaNegativeBinom {
+  if n <= 0 {
+    abort("n must be positive")
+  }
+  if a <= 0.0 {
+    abort("a must be positive")
+  }
+  if b <= 0.0 {
+    abort("b must be positive")
+  }
   { n, a, b, loc }
 }
 

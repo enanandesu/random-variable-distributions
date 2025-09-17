@@ -6,6 +6,9 @@ struct Bernoulli {
 
 ///|
 pub fn Bernoulli::new(p : Double, loc? : Double = 0.0) -> Bernoulli {
+  if p < 0.0 || p > 1.0 {
+    abort("p must be in [0, 1]")
+  }
   { p, loc }
 }
 

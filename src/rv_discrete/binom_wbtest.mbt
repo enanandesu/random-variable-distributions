@@ -1,4 +1,19 @@
 ///|
+test "panic Binom::new/invalid_n_negative" {
+  ignore(Binom::new(-1, 0.5))
+}
+
+///|
+test "panic Binom::new/invalid_p_low" {
+  ignore(Binom::new(1, -0.1))
+}
+
+///|
+test "panic Binom::new/invalid_p_high" {
+  ignore(Binom::new(1, 1.1))
+}
+
+///|
 test "Binom creation and basic properties" {
   let binom = Binom::new(10, 0.3, loc=2.0)
 

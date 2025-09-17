@@ -7,6 +7,12 @@ struct Binom {
 
 ///|
 pub fn Binom::new(n : Int, p : Double, loc? : Double = 0.0) -> Binom {
+  if n < 0 {
+    abort("n must be non-negative")
+  }
+  if p < 0.0 || p > 1.0 {
+    abort("p must be in [0, 1]")
+  }
   { n, p, loc }
 }
 
