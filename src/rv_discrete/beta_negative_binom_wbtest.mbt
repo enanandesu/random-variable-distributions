@@ -172,3 +172,17 @@ test "BetaNegativeBinom::kurt" {
   let expected = 7.494987468671679
   assert_true((dist.kurt() - expected).abs() < 1.0e-10)
 }
+
+test "rvs"{
+  let dist = BetaNegativeBinom::new(5, 2.0, 3.0, loc=0.0)
+  let sample = dist.rvs(1000000, Some(b"12345678912345678912345678912345"))
+  let arr = Array::make(100, 0)
+  for val in sample {
+    if val >= 0.0 && val < 100.0 {
+      arr[val.to_int()] += 1
+    }
+  }
+  for i in 0..<100 {
+    assert_true(arr[i].to_double()/sample.length().to_double() - dist.pmf(i.to_double()).abs() < 0.001)
+  }
+}
