@@ -93,7 +93,7 @@ fn fisher_f_entropy(df1 : Double, df2 : Double, scale : Double) -> Double {
 ///|
 
 ///|
-impl RVContinuous for F with rvs(self, size, seed) {
+pub impl RVContinuous for F with rvs(self, size, seed) {
   let rng = match seed {
     Some(val) => @random.Rand::chacha8(seed=val)
     None => @random.Rand::new()
@@ -114,14 +114,14 @@ impl RVContinuous for F with rvs(self, size, seed) {
     } else if z >= 1.0 {
       z = 1.0 - 1.0e-12
     }
-    let y = (self.df2 * z) / (self.df1 * (1.0 - z))
+    let y = self.df2 * z / (self.df1 * (1.0 - z))
     samples.push(self.loc + self.scale * y)
   }
   samples
 }
 
 ///|
-impl RVContinuous for F with pdf(self, x) {
+pub impl RVContinuous for F with pdf(self, x) {
   let y = (x - self.loc) / self.scale
   if y <= 0.0 {
     0.0
@@ -131,7 +131,7 @@ impl RVContinuous for F with pdf(self, x) {
 }
 
 ///|
-impl RVContinuous for F with cdf(self, x) {
+pub impl RVContinuous for F with cdf(self, x) {
   let y = (x - self.loc) / self.scale
   if y <= 0.0 {
     0.0
@@ -144,7 +144,7 @@ impl RVContinuous for F with cdf(self, x) {
 }
 
 ///|
-impl RVContinuous for F with ppf(self, q) {
+pub impl RVContinuous for F with ppf(self, q) {
   if q <= 0.0 || q >= 1.0 {
     abort("q must be in (0, 1)")
   }
@@ -156,17 +156,17 @@ impl RVContinuous for F with ppf(self, q) {
   } else if z >= 1.0 {
     z = 1.0 - 1.0e-12
   }
-  let y = (self.df2 * z) / (self.df1 * (1.0 - z))
+  let y = self.df2 * z / (self.df1 * (1.0 - z))
   self.loc + self.scale * y
 }
 
 ///|
-impl RVContinuous for F with sf(self, x) {
+pub impl RVContinuous for F with sf(self, x) {
   1.0 - self.cdf(x)
 }
 
 ///|
-impl RVContinuous for F with isf(self, q) {
+pub impl RVContinuous for F with isf(self, q) {
   if q <= 0.0 || q >= 1.0 {
     abort("q must be in (0, 1)")
   }
@@ -174,7 +174,7 @@ impl RVContinuous for F with isf(self, q) {
 }
 
 ///|
-impl RVContinuous for F with logpdf(self, x) {
+pub impl RVContinuous for F with logpdf(self, x) {
   let y = (x - self.loc) / self.scale
   if y <= 0.0 {
     @double.neg_infinity
@@ -191,7 +191,7 @@ impl RVContinuous for F with logpdf(self, x) {
 }
 
 ///|
-impl RVContinuous for F with logcdf(self, x) {
+pub impl RVContinuous for F with logcdf(self, x) {
   let value = self.cdf(x)
   if value <= 0.0 {
     @double.neg_infinity
@@ -201,7 +201,7 @@ impl RVContinuous for F with logcdf(self, x) {
 }
 
 ///|
-impl RVContinuous for F with logsf(self, x) {
+pub impl RVContinuous for F with logsf(self, x) {
   let value = self.sf(x)
   if value <= 0.0 {
     @double.neg_infinity
@@ -211,7 +211,7 @@ impl RVContinuous for F with logsf(self, x) {
 }
 
 ///|
-impl RVContinuous for F with moment(self, n) {
+pub impl RVContinuous for F with moment(self, n) {
   if n < 0 {
     abort("moment order must be non-negative")
   }
@@ -234,17 +234,17 @@ impl RVContinuous for F with moment(self, n) {
 }
 
 ///|
-impl RVContinuous for F with entropy(self) {
+pub impl RVContinuous for F with entropy(self) {
   fisher_f_entropy(self.df1, self.df2, self.scale)
 }
 
 ///|
-impl RVContinuous for F with median(self) {
+pub impl RVContinuous for F with median(self) {
   self.ppf(0.5)
 }
 
 ///|
-impl RVContinuous for F with mean(self) {
+pub impl RVContinuous for F with mean(self) {
   if self.df2 <= 2.0 {
     @double.infinity
   } else {
@@ -253,7 +253,7 @@ impl RVContinuous for F with mean(self) {
 }
 
 ///|
-impl RVContinuous for F with varc(self) {
+pub impl RVContinuous for F with varc(self) {
   if self.df2 <= 4.0 {
     @double.infinity
   } else {
@@ -267,12 +267,12 @@ impl RVContinuous for F with varc(self) {
 }
 
 ///|
-impl RVContinuous for F with std(self) {
+pub impl RVContinuous for F with std(self) {
   self.varc().sqrt()
 }
 
 ///|
-impl RVContinuous for F with interval(self, alpha : Double) {
+pub impl RVContinuous for F with interval(self, alpha : Double) {
   if alpha <= 0.0 || alpha >= 1.0 {
     abort("alpha must be in (0, 1)")
   }
@@ -282,7 +282,7 @@ impl RVContinuous for F with interval(self, alpha : Double) {
 }
 
 ///|
-impl RVContinuous for F with skew(self) {
+pub impl RVContinuous for F with skew(self) {
   if self.df2 <= 6.0 {
     @double.infinity
   } else {
@@ -295,7 +295,7 @@ impl RVContinuous for F with skew(self) {
 }
 
 ///|
-impl RVContinuous for F with kurt(self) {
+pub impl RVContinuous for F with kurt(self) {
   if self.df2 <= 8.0 {
     @double.infinity
   } else {

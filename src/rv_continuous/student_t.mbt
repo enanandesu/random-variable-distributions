@@ -15,7 +15,7 @@ pub fn StudentT::new(
 }
 
 ///|
-impl RVContinuous for StudentT with rvs(self, size, seed) {
+pub impl RVContinuous for StudentT with rvs(self, size, seed) {
   let samples = Array::new(capacity=size)
   let normal = Normal::new()
   let chi2 = Chi2::new(self.df)
@@ -36,7 +36,7 @@ impl RVContinuous for StudentT with rvs(self, size, seed) {
 }
 
 ///|
-impl RVContinuous for StudentT with pdf(self, x) {
+pub impl RVContinuous for StudentT with pdf(self, x) {
   let z = (x - self.loc) / self.scale
   let k = (self.df + 1.0) / 2.0
   let factor = @kmath.gamma(k) /
@@ -45,7 +45,7 @@ impl RVContinuous for StudentT with pdf(self, x) {
 }
 
 ///|
-impl RVContinuous for StudentT with cdf(self, x) {
+pub impl RVContinuous for StudentT with cdf(self, x) {
   let z = (x - self.loc) / self.scale
   let a = 0.5 * self.df
   let b = 0.5
@@ -58,7 +58,7 @@ impl RVContinuous for StudentT with cdf(self, x) {
 }
 
 ///|
-impl RVContinuous for StudentT with ppf(self, q) {
+pub impl RVContinuous for StudentT with ppf(self, q) {
   if q <= 0.0 || q >= 1.0 {
     abort("q must be in (0, 1)")
   }
@@ -89,12 +89,12 @@ impl RVContinuous for StudentT with ppf(self, q) {
 }
 
 ///|
-impl RVContinuous for StudentT with sf(self, x) {
+pub impl RVContinuous for StudentT with sf(self, x) {
   1.0 - self.cdf(x)
 }
 
 ///|
-impl RVContinuous for StudentT with isf(self, q) {
+pub impl RVContinuous for StudentT with isf(self, q) {
   if q <= 0.0 || q >= 1.0 {
     abort("q must be in (0, 1)")
   }
@@ -102,22 +102,22 @@ impl RVContinuous for StudentT with isf(self, q) {
 }
 
 ///|
-impl RVContinuous for StudentT with logpdf(self, x) {
+pub impl RVContinuous for StudentT with logpdf(self, x) {
   @math.ln(self.pdf(x))
 }
 
 ///|
-impl RVContinuous for StudentT with logcdf(self, x) {
+pub impl RVContinuous for StudentT with logcdf(self, x) {
   @math.ln(self.cdf(x))
 }
 
 ///|
-impl RVContinuous for StudentT with logsf(self, x) {
+pub impl RVContinuous for StudentT with logsf(self, x) {
   @math.ln(self.sf(x))
 }
 
 ///|
-impl RVContinuous for StudentT with moment(self, n) {
+pub impl RVContinuous for StudentT with moment(self, n) {
   if n < 0 {
     abort("moment order must be non-negative")
   }
@@ -144,7 +144,7 @@ impl RVContinuous for StudentT with moment(self, n) {
 }
 
 ///|
-impl RVContinuous for StudentT with mean(self) {
+pub impl RVContinuous for StudentT with mean(self) {
   if self.df <= 1.0 {
     abort("There is no mean when df<=1!")
   }
@@ -152,12 +152,12 @@ impl RVContinuous for StudentT with mean(self) {
 }
 
 ///|
-impl RVContinuous for StudentT with median(self) {
+pub impl RVContinuous for StudentT with median(self) {
   self.loc
 }
 
 ///|
-impl RVContinuous for StudentT with varc(self) {
+pub impl RVContinuous for StudentT with varc(self) {
   if self.df <= 2.0 {
     abort("There is no varc when df<=2!")
   }
@@ -165,7 +165,7 @@ impl RVContinuous for StudentT with varc(self) {
 }
 
 ///|
-impl RVContinuous for StudentT with std(self) {
+pub impl RVContinuous for StudentT with std(self) {
   if self.df <= 2.0 {
     abort("There is no std when df<=2!")
   }
@@ -173,7 +173,7 @@ impl RVContinuous for StudentT with std(self) {
 }
 
 ///|
-impl RVContinuous for StudentT with entropy(self) {
+pub impl RVContinuous for StudentT with entropy(self) {
   let nu = self.df
   let half_nu_plus_1 = (nu + 1.0) / 2.0
   let half_nu = nu / 2.0
@@ -185,7 +185,7 @@ impl RVContinuous for StudentT with entropy(self) {
 }
 
 ///|
-impl RVContinuous for StudentT with interval(self, alpha : Double) {
+pub impl RVContinuous for StudentT with interval(self, alpha : Double) {
   if alpha <= 0.0 || alpha >= 1.0 {
     abort("alpha must be in (0, 1)")
   }
@@ -193,7 +193,7 @@ impl RVContinuous for StudentT with interval(self, alpha : Double) {
 }
 
 ///|
-impl RVContinuous for StudentT with skew(self) {
+pub impl RVContinuous for StudentT with skew(self) {
   if self.df <= 3.0 {
     abort("There is no skew when df<=3!")
   }
@@ -201,7 +201,7 @@ impl RVContinuous for StudentT with skew(self) {
 }
 
 ///|
-impl RVContinuous for StudentT with kurt(self) {
+pub impl RVContinuous for StudentT with kurt(self) {
   if self.df <= 4.0 {
     abort("There is no kurt when df<=4!")
   }
