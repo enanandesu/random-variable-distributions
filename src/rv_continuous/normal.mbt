@@ -10,16 +10,16 @@ pub fn Normal::new(loc? : Double = 0.0, scale? : Double = 1.0) -> Normal {
 }
 
 ///|
-pub impl RVContinuous for Normal with rvs(self, size, seed) {
+pub impl RVContinuous for Normal with rvs(
+  self,
+  size,
+  rand? = @random.Rand::new(),
+) {
   let samples = Array::new(capacity=size)
   let mut i = 0
-  let rdm = match seed {
-    None => @random.Rand::new()
-    Some(val) => @random.Rand::chacha8(seed=val)
-  }
   while i < size {
-    let u1 = rdm.double()
-    let u2 = rdm.double()
+    let u1 = rand.double()
+    let u2 = rand.double()
     let u1_safe = if u1 <= 0.0 { 1.0e-10 } else { u1 }
     let factor = (-2.0 * @math.ln(u1_safe)).sqrt()
     let theta = 2.0 * @math.PI * u2
@@ -180,11 +180,4 @@ fn double_factorial(n : Int) -> Int {
   } else {
     n * double_factorial(n - 2)
   }
-}
-
-///|
-fn derive_seed(seed : Bytes) -> Bytes {
-  // 每次调用都会吐出一个新的 32 字节种子
-  let r = @random.Rand::chacha8(seed~)
-  Bytes::makei(32, _ => r.uint(limit=256U).to_byte())
 }

@@ -15,19 +15,17 @@ pub fn StudentT::new(
 }
 
 ///|
-pub impl RVContinuous for StudentT with rvs(self, size, seed) {
+pub impl RVContinuous for StudentT with rvs(
+  self,
+  size,
+  rand? = @random.Rand::new(),
+) {
   let samples = Array::new(capacity=size)
   let normal = Normal::new()
   let chi2 = Chi2::new(self.df)
-  let mut seed_val = match seed {
-    None => b"ABCDEFGHIJKLMNOPQRSTUVWXYZ123456"
-    Some(val) => val
-  }
   for _ in 0..<size {
-    let z = normal.rvs(1, Some(seed_val))[0]
-    seed_val = derive_seed(seed_val)
-    let v = chi2.rvs(1, Some(seed_val))[0]
-    seed_val = derive_seed(seed_val)
+    let z = normal.rvs(1, rand~)[0]
+    let v = chi2.rvs(1, rand~)[0]
     let t_standard = z / (v / self.df).sqrt()
     let t_sample = self.loc + self.scale * t_standard
     samples.push(t_sample)

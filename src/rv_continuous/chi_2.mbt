@@ -12,26 +12,21 @@ pub fn Chi2::new(k : Double) -> Chi2 {
 }
 
 ///|
-pub impl RVContinuous for Chi2 with rvs(self, size, seed) {
+pub impl RVContinuous for Chi2 with rvs(self, size, rand? = @random.Rand::new()) {
   let mut samples = Array::new(capacity=size)
   let normal = Normal::new()
-  let mut seed_val = match seed {
-    None => b"ABCDEFGHIJKLMNOPQRSTUVWXYZ123456"
-    Some(val) => val
-  }
   if self.k.floor() == self.k {
     for _ in 0..<size {
       let mut chi2_sample = 0.0
       let k_int = self.k.to_int()
       for _ in 0..<k_int {
-        let z = normal.rvs(1, Some(seed_val))[0]
-        seed_val = derive_seed(seed_val)
+        let z = normal.rvs(1, rand~)[0]
         chi2_sample += z * z
       }
       samples.push(chi2_sample)
     }
   } else {
-    samples = Gamma::new(self.k / 2.0, theta=2.0).rvs(size, seed)
+    samples = Gamma::new(self.k / 2.0, theta=2.0).rvs(size, rand~)
   }
   samples
 }

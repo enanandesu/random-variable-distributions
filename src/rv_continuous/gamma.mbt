@@ -16,42 +16,34 @@ pub fn Gamma::new(k : Double, theta? : Double = 1.0) -> Gamma {
 }
 
 ///|
-pub impl RVContinuous for Gamma with rvs(self, size, seed) {
+pub impl RVContinuous for Gamma with rvs(
+  self,
+  size,
+  rand? = @random.Rand::new(),
+) {
   let samples = Array::new(capacity=size)
-  let mut seed_tmp = seed
   for _ in 0..<size {
-    let (sample, seed_now) = if self.k >= 1.0 {
-      gamma_marsaglia_tsang(self.k, seed_tmp)
+    let sample = if self.k >= 1.0 {
+      gamma_marsaglia_tsang(self.k, rand)
     } else {
-      gamma_ahrens_dieter(self.k, seed_tmp)
+      gamma_ahrens_dieter(self.k, rand)
     }
     samples.push(sample * self.theta)
-    seed_tmp = Some(seed_now)
   }
   samples
 }
 
 ///|
-fn gamma_marsaglia_tsang(k : Double, seed : Bytes?) -> (Double, Bytes) {
+fn gamma_marsaglia_tsang(k : Double, rand : @random.Rand) -> Double {
   let d = k - 1.0 / 3.0
   let c = 1.0 / (9.0 * d).sqrt()
-  let mut seed_val = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ123456"
-  let rdm = match seed {
-    None => @random.Rand::new()
-    Some(val) => {
-      seed_val = val
-      @random.Rand::chacha8(seed=val)
-    }
-  }
   let mut ans = 0.0
-  let mut last_seed = derive_seed(seed_val)
   while true {
-    let x = Normal::new().rvs(1, Some(last_seed))[0]
-    last_seed = derive_seed(seed_val)
+    let x = Normal::new().rvs(1, rand~)[0]
     let v = 1.0 + c * x
     if v > 0.0 {
       let v3 = v * v * v
-      let u = rdm.double()
+      let u = rand.double()
       if u < 1.0 - 0.0331 * x * x * x * x {
         ans = d * v3
         break
@@ -62,39 +54,30 @@ fn gamma_marsaglia_tsang(k : Double, seed : Bytes?) -> (Double, Bytes) {
       }
     }
   }
-  (ans, last_seed)
+  ans
 }
 
 ///|
-fn gamma_ahrens_dieter(k : Double, seed : Bytes?) -> (Double, Bytes) {
+fn gamma_ahrens_dieter(k : Double, rand : @random.Rand) -> Double {
   let e = @kmath.E
-  let mut seed_val = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ123456"
-  let rdm = match seed {
-    None => @random.Rand::new()
-    Some(val) => {
-      seed_val = val
-      @random.Rand::chacha8(seed=val)
-    }
-  }
-  seed_val = derive_seed(seed_val)
   while true {
-    let u = rdm.double()
-    let v = rdm.double()
+    let u = rand.double()
+    let v = rand.double()
     if u <= e / (e + k) {
       let x = @math.pow(v, 1.0 / k)
       let y = @math.exp(-x)
-      if rdm.double() <= y {
-        break (x, seed_val)
+      if rand.double() <= y {
+        break x
       }
     } else {
       let x = -@math.ln(v)
       let y = @math.pow(x, k - 1.0)
-      if rdm.double() <= y {
-        break (x, seed_val)
+      if rand.double() <= y {
+        break x
       }
     }
   } else {
-    (0.0, seed_val)
+    0.0
   }
 }
 

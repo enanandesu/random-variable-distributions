@@ -93,16 +93,12 @@ fn fisher_f_entropy(df1 : Double, df2 : Double, scale : Double) -> Double {
 ///|
 
 ///|
-pub impl RVContinuous for F with rvs(self, size, seed) {
-  let rng = match seed {
-    Some(val) => @random.Rand::chacha8(seed=val)
-    None => @random.Rand::new()
-  }
+pub impl RVContinuous for F with rvs(self, size, rand? = @random.Rand::new()) {
   let samples = Array::new(capacity=size)
   let a = self.df1 / 2.0
   let b = self.df2 / 2.0
   for _i in 0..<size {
-    let mut u = rng.double()
+    let mut u = rand.double()
     if u <= 0.0 {
       u = 1.0e-12
     } else if u >= 1.0 {

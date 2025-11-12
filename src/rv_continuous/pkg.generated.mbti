@@ -1,6 +1,10 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "enanandesu/random-variable-distributions/rv_continuous"
 
+import(
+  "moonbitlang/core/random"
+)
+
 // Values
 
 // Errors
@@ -34,7 +38,7 @@ impl RVContinuous for StudentT
 
 // Traits
 pub trait RVContinuous {
-  rvs(Self, Int, Bytes?) -> Array[Double]
+  rvs(Self, Int, rand? : @random.Rand) -> Array[Double]
   pdf(Self, Double) -> Double
   cdf(Self, Double) -> Double
   ppf(Self, Double) -> Double

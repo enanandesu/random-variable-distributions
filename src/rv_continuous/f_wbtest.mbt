@@ -86,7 +86,7 @@ test "F::interval" {
 test "F::rvs" {
   let dist = F::new(4.0, 9.0, loc=0.5, scale=2.5)
   let seed = b"12345678901234567890123456789012"
-  let samples = dist.rvs(50000, Some(seed))
+  let samples = dist.rvs(50000, rand=@random.Rand::chacha8(seed~))
   assert_eq(samples.length(), 50000)
   let mut sum = 0.0
   let mut min_val = @double.infinity
