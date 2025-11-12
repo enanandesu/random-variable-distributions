@@ -97,18 +97,8 @@ pub impl RVContinuous for F with rvs(self, size, rand? = @random.Rand::new()) {
   let a = self.df1 / 2.0
   let b = self.df2 / 2.0
   Array::makei(size, _ => {
-    let mut u = rand.double()
-    if u <= 0.0 {
-      u = 1.0e-12
-    } else if u >= 1.0 {
-      u = 1.0 - 1.0e-12
-    }
-    let mut z = @sp.betaincinv(a, b, u)
-    if z <= 0.0 {
-      z = 1.0e-12
-    } else if z >= 1.0 {
-      z = 1.0 - 1.0e-12
-    }
+    let u = rand.double()
+    let z = @sp.betaincinv(a, b, u)
     let y = self.df2 * z / (self.df1 * (1.0 - z))
     self.loc + self.scale * y
   })

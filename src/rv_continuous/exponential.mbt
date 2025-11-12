@@ -74,12 +74,7 @@ pub impl RVContinuous for Exponential with rvs(
   rand? = @random.Rand::new(),
 ) {
   Array::makei(size, _ => {
-    let mut u = rand.double()
-    if u <= 0.0 {
-      u = 1.0e-12
-    } else if u >= 1.0 {
-      u = 1.0 - 1.0e-12
-    }
+    let u = rand.double()
     self.loc - self.scale * @math.ln(1.0 - u)
   })
 }
