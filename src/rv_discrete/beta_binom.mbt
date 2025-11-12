@@ -26,7 +26,7 @@ pub fn BetaBinom::new(
 }
 
 ///|
-impl RVDiscrete for BetaBinom with rvs(self, size, seed) {
+pub impl RVDiscrete for BetaBinom with rvs(self, size, seed) {
   let rng = match seed {
     Some(s) => @random.Rand::chacha8(seed=s)
     None => @random.Rand::new()
@@ -63,7 +63,7 @@ fn generate_beta(a : Double, b : Double, rng : @random.Rand) -> Double {
 }
 
 ///|
-impl RVDiscrete for BetaBinom with pmf(self, k) {
+pub impl RVDiscrete for BetaBinom with pmf(self, k) {
   let diff = k - self.loc
   if diff != diff.round() {
     0.0
@@ -81,7 +81,7 @@ impl RVDiscrete for BetaBinom with pmf(self, k) {
 }
 
 ///|
-impl RVDiscrete for BetaBinom with cdf(self, x) {
+pub impl RVDiscrete for BetaBinom with cdf(self, x) {
   let k_max = (x - self.loc).floor().to_int()
   if k_max < 0 {
     0.0
@@ -97,7 +97,7 @@ impl RVDiscrete for BetaBinom with cdf(self, x) {
 }
 
 ///|
-impl RVDiscrete for BetaBinom with ppf(self, q) {
+pub impl RVDiscrete for BetaBinom with ppf(self, q) {
   if q < 0.0 || q > 1.0 {
     abort("q must be in [0, 1]")
   }
@@ -118,12 +118,12 @@ impl RVDiscrete for BetaBinom with ppf(self, q) {
 }
 
 ///|
-impl RVDiscrete for BetaBinom with sf(self, x) {
+pub impl RVDiscrete for BetaBinom with sf(self, x) {
   1.0 - self.cdf(x)
 }
 
 ///|
-impl RVDiscrete for BetaBinom with isf(self, q) {
+pub impl RVDiscrete for BetaBinom with isf(self, q) {
   if q < 0.0 || q > 1.0 {
     abort("q must be in [0, 1]")
   }
@@ -131,32 +131,32 @@ impl RVDiscrete for BetaBinom with isf(self, q) {
 }
 
 ///|
-impl RVDiscrete for BetaBinom with logpmf(self, x) {
+pub impl RVDiscrete for BetaBinom with logpmf(self, x) {
   @math.ln(self.pmf(x))
 }
 
 ///|
-impl RVDiscrete for BetaBinom with logcdf(self, x) {
+pub impl RVDiscrete for BetaBinom with logcdf(self, x) {
   @math.ln(self.cdf(x))
 }
 
 ///|
-impl RVDiscrete for BetaBinom with logsf(self, x) {
+pub impl RVDiscrete for BetaBinom with logsf(self, x) {
   @math.ln(self.sf(x))
 }
 
 ///|
-impl RVDiscrete for BetaBinom with mean(self) {
+pub impl RVDiscrete for BetaBinom with mean(self) {
   self.loc + self.n.to_double() * self.a / (self.a + self.b)
 }
 
 ///|
-impl RVDiscrete for BetaBinom with median(self) {
+pub impl RVDiscrete for BetaBinom with median(self) {
   self.ppf(0.5)
 }
 
 ///|
-impl RVDiscrete for BetaBinom with varc(self) {
+pub impl RVDiscrete for BetaBinom with varc(self) {
   self.n.to_double() *
   self.a *
   self.b *
@@ -165,12 +165,12 @@ impl RVDiscrete for BetaBinom with varc(self) {
 }
 
 ///|
-impl RVDiscrete for BetaBinom with std(self) {
+pub impl RVDiscrete for BetaBinom with std(self) {
   self.varc().sqrt()
 }
 
 ///|
-impl RVDiscrete for BetaBinom with entropy(self) {
+pub impl RVDiscrete for BetaBinom with entropy(self) {
   let mut entropy = 0.0
   for k in 0..=self.n {
     let prob = self.pmf(self.loc + k.to_double())
@@ -182,7 +182,7 @@ impl RVDiscrete for BetaBinom with entropy(self) {
 }
 
 ///|
-impl RVDiscrete for BetaBinom with interval(self, alpha : Double) {
+pub impl RVDiscrete for BetaBinom with interval(self, alpha : Double) {
   if alpha < 0.0 || alpha > 1.0 {
     abort("alpha must be in [0, 1]")
   }
@@ -192,7 +192,7 @@ impl RVDiscrete for BetaBinom with interval(self, alpha : Double) {
 }
 
 ///|
-impl RVDiscrete for BetaBinom with skew(self) {
+pub impl RVDiscrete for BetaBinom with skew(self) {
   let a = self.a
   let b = self.b
   let n = self.n.to_double()
@@ -203,7 +203,7 @@ impl RVDiscrete for BetaBinom with skew(self) {
 }
 
 ///|
-impl RVDiscrete for BetaBinom with kurt(self) {
+pub impl RVDiscrete for BetaBinom with kurt(self) {
   let a = self.a
   let b = self.b
   let n = self.n.to_double()

@@ -81,7 +81,7 @@ fn boltzmann_index(value : Double, loc : Double, n : Int) -> Int? {
 }
 
 ///|
-impl RVDiscrete for Boltzmann with rvs(self, size, seed) {
+pub impl RVDiscrete for Boltzmann with rvs(self, size, seed) {
   let rng = match seed {
     Some(s) => @random.Rand::chacha8(seed=s)
     None => @random.Rand::new()
@@ -113,7 +113,7 @@ impl RVDiscrete for Boltzmann with rvs(self, size, seed) {
 }
 
 ///|
-impl RVDiscrete for Boltzmann with pmf(self, k) {
+pub impl RVDiscrete for Boltzmann with pmf(self, k) {
   match boltzmann_index(k, self.loc, self.n) {
     Some(index) => {
       let norm = boltzmann_norm(self.lambda, self.n)
@@ -124,7 +124,7 @@ impl RVDiscrete for Boltzmann with pmf(self, k) {
 }
 
 ///|
-impl RVDiscrete for Boltzmann with cdf(self, x) {
+pub impl RVDiscrete for Boltzmann with cdf(self, x) {
   let k_max = (x - self.loc).floor().to_int()
   if k_max < 0 {
     0.0
@@ -144,7 +144,7 @@ impl RVDiscrete for Boltzmann with cdf(self, x) {
 }
 
 ///|
-impl RVDiscrete for Boltzmann with ppf(self, q) {
+pub impl RVDiscrete for Boltzmann with ppf(self, q) {
   if q < 0.0 || q > 1.0 {
     abort("q must be in [0, 1]")
   }
@@ -169,12 +169,12 @@ impl RVDiscrete for Boltzmann with ppf(self, q) {
 }
 
 ///|
-impl RVDiscrete for Boltzmann with sf(self, x) {
+pub impl RVDiscrete for Boltzmann with sf(self, x) {
   1.0 - self.cdf(x)
 }
 
 ///|
-impl RVDiscrete for Boltzmann with isf(self, q) {
+pub impl RVDiscrete for Boltzmann with isf(self, q) {
   if q <= 0.0 || q > 1.0 {
     abort("q must be in (0, 1]")
   }
@@ -182,7 +182,7 @@ impl RVDiscrete for Boltzmann with isf(self, q) {
 }
 
 ///|
-impl RVDiscrete for Boltzmann with logpmf(self, k) {
+pub impl RVDiscrete for Boltzmann with logpmf(self, k) {
   match boltzmann_index(k, self.loc, self.n) {
     Some(index) => {
       let lambda = self.lambda
@@ -196,7 +196,7 @@ impl RVDiscrete for Boltzmann with logpmf(self, k) {
 }
 
 ///|
-impl RVDiscrete for Boltzmann with logcdf(self, x) {
+pub impl RVDiscrete for Boltzmann with logcdf(self, x) {
   let value = self.cdf(x)
   if value <= 0.0 {
     @double.neg_infinity
@@ -206,7 +206,7 @@ impl RVDiscrete for Boltzmann with logcdf(self, x) {
 }
 
 ///|
-impl RVDiscrete for Boltzmann with logsf(self, x) {
+pub impl RVDiscrete for Boltzmann with logsf(self, x) {
   let value = self.sf(x)
   if value <= 0.0 {
     @double.neg_infinity
@@ -216,7 +216,7 @@ impl RVDiscrete for Boltzmann with logsf(self, x) {
 }
 
 ///|
-impl RVDiscrete for Boltzmann with entropy(self) {
+pub impl RVDiscrete for Boltzmann with entropy(self) {
   let norm = boltzmann_norm(self.lambda, self.n)
   let ratio = boltzmann_q(self.lambda)
   let mut weight = 1.0
@@ -232,31 +232,31 @@ impl RVDiscrete for Boltzmann with entropy(self) {
 }
 
 ///|
-impl RVDiscrete for Boltzmann with median(self) {
+pub impl RVDiscrete for Boltzmann with median(self) {
   self.ppf(0.5)
 }
 
 ///|
-impl RVDiscrete for Boltzmann with mean(self) {
+pub impl RVDiscrete for Boltzmann with mean(self) {
   let n = self.n.to_double()
   let (mu, _, _, _, _, _) = boltzmann_moment_terms(self.lambda, n)
   self.loc + mu
 }
 
 ///|
-impl RVDiscrete for Boltzmann with varc(self) {
+pub impl RVDiscrete for Boltzmann with varc(self) {
   let n = self.n.to_double()
   let (_, variance, _, _, _, _) = boltzmann_moment_terms(self.lambda, n)
   variance
 }
 
 ///|
-impl RVDiscrete for Boltzmann with std(self) {
+pub impl RVDiscrete for Boltzmann with std(self) {
   self.varc().sqrt()
 }
 
 ///|
-impl RVDiscrete for Boltzmann with interval(self, alpha : Double) {
+pub impl RVDiscrete for Boltzmann with interval(self, alpha : Double) {
   if alpha < 0.0 || alpha > 1.0 {
     abort("alpha must be in [0, 1]")
   }
@@ -266,7 +266,7 @@ impl RVDiscrete for Boltzmann with interval(self, alpha : Double) {
 }
 
 ///|
-impl RVDiscrete for Boltzmann with skew(self) {
+pub impl RVDiscrete for Boltzmann with skew(self) {
   let n = self.n.to_double()
   let (_, variance, trm, trm2, z, z_n) = boltzmann_moment_terms(self.lambda, n)
   if variance <= 0.0 || trm2 <= 0.0 {
@@ -285,7 +285,7 @@ impl RVDiscrete for Boltzmann with skew(self) {
 }
 
 ///|
-impl RVDiscrete for Boltzmann with kurt(self) {
+pub impl RVDiscrete for Boltzmann with kurt(self) {
   let n = self.n.to_double()
   let (_, variance, trm, trm2, z, z_n) = boltzmann_moment_terms(self.lambda, n)
   if variance <= 0.0 || trm2 <= 0.0 {

@@ -17,7 +17,7 @@ pub fn Binom::new(n : Int, p : Double, loc? : Double = 0.0) -> Binom {
 }
 
 ///|
-impl RVDiscrete for Binom with rvs(self, size, seed) {
+pub impl RVDiscrete for Binom with rvs(self, size, seed) {
   let rng = match seed {
     Some(s) => @random.Rand::chacha8(seed=s)
     None => @random.Rand::new()
@@ -55,7 +55,7 @@ fn combination(n : Int, k : Int) -> Int {
 }
 
 ///|
-impl RVDiscrete for Binom with pmf(self, k) {
+pub impl RVDiscrete for Binom with pmf(self, k) {
   let diff = k - self.loc
   if diff != diff.round() {
     0.0
@@ -73,7 +73,7 @@ impl RVDiscrete for Binom with pmf(self, k) {
 }
 
 ///|
-impl RVDiscrete for Binom with cdf(self, x) {
+pub impl RVDiscrete for Binom with cdf(self, x) {
   let k_max = (x - self.loc).floor().to_int()
   if k_max < 0 {
     0.0
@@ -89,7 +89,7 @@ impl RVDiscrete for Binom with cdf(self, x) {
 }
 
 ///|
-impl RVDiscrete for Binom with ppf(self, q) {
+pub impl RVDiscrete for Binom with ppf(self, q) {
   if q < 0.0 || q > 1.0 {
     abort("q must be in [0, 1]")
   }
@@ -110,12 +110,12 @@ impl RVDiscrete for Binom with ppf(self, q) {
 }
 
 ///|
-impl RVDiscrete for Binom with sf(self, x) {
+pub impl RVDiscrete for Binom with sf(self, x) {
   1.0 - self.cdf(x)
 }
 
 ///|
-impl RVDiscrete for Binom with isf(self, q) {
+pub impl RVDiscrete for Binom with isf(self, q) {
   if q < 0.0 || q > 1.0 {
     abort("q must be in [0, 1]")
   }
@@ -123,42 +123,42 @@ impl RVDiscrete for Binom with isf(self, q) {
 }
 
 ///|
-impl RVDiscrete for Binom with logpmf(self, x) {
+pub impl RVDiscrete for Binom with logpmf(self, x) {
   @math.ln(self.pmf(x))
 }
 
 ///|
-impl RVDiscrete for Binom with logcdf(self, x) {
+pub impl RVDiscrete for Binom with logcdf(self, x) {
   @math.ln(self.cdf(x))
 }
 
 ///|
-impl RVDiscrete for Binom with logsf(self, x) {
+pub impl RVDiscrete for Binom with logsf(self, x) {
   @math.ln(self.sf(x))
 }
 
 ///|
-impl RVDiscrete for Binom with mean(self) {
+pub impl RVDiscrete for Binom with mean(self) {
   self.loc + self.n.to_double() * self.p
 }
 
 ///|
-impl RVDiscrete for Binom with median(self) {
+pub impl RVDiscrete for Binom with median(self) {
   self.loc + (self.n.to_double() * self.p).round()
 }
 
 ///|
-impl RVDiscrete for Binom with varc(self) {
+pub impl RVDiscrete for Binom with varc(self) {
   self.n.to_double() * self.p * (1.0 - self.p)
 }
 
 ///|
-impl RVDiscrete for Binom with std(self) {
+pub impl RVDiscrete for Binom with std(self) {
   (self.n.to_double() * self.p * (1.0 - self.p)).sqrt()
 }
 
 ///|
-impl RVDiscrete for Binom with entropy(self) {
+pub impl RVDiscrete for Binom with entropy(self) {
   let mut entropy = 0.0
   for k in 0..=self.n {
     let prob = self.pmf(self.loc + k.to_double())
@@ -170,7 +170,7 @@ impl RVDiscrete for Binom with entropy(self) {
 }
 
 ///|
-impl RVDiscrete for Binom with interval(self, alpha : Double) {
+pub impl RVDiscrete for Binom with interval(self, alpha : Double) {
   if alpha < 0.0 || alpha > 1.0 {
     abort("alpha must be in [0, 1]")
   }
@@ -180,7 +180,7 @@ impl RVDiscrete for Binom with interval(self, alpha : Double) {
 }
 
 ///|
-impl RVDiscrete for Binom with skew(self) {
+pub impl RVDiscrete for Binom with skew(self) {
   let p = self.p
   let q = 1.0 - p
   let n = self.n.to_double()
@@ -188,7 +188,7 @@ impl RVDiscrete for Binom with skew(self) {
 }
 
 ///|
-impl RVDiscrete for Binom with kurt(self) {
+pub impl RVDiscrete for Binom with kurt(self) {
   let p = self.p
   let q = 1.0 - p
   let n = self.n.to_double()

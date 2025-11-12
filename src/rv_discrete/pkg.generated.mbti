@@ -8,21 +8,27 @@ package "enanandesu/random-variable-distributions/rv_discrete"
 // Types and methods
 type Bernoulli
 fn Bernoulli::new(Double, loc? : Double) -> Self
+impl RVDiscrete for Bernoulli
 
 type BetaBinom
 fn BetaBinom::new(Int, Double, Double, loc? : Double) -> Self
+impl RVDiscrete for BetaBinom
 
 type BetaNegativeBinom
 fn BetaNegativeBinom::new(Int, Double, Double, loc? : Double) -> Self
+impl RVDiscrete for BetaNegativeBinom
 
 type Binom
 fn Binom::new(Int, Double, loc? : Double) -> Self
+impl RVDiscrete for Binom
 
 type Boltzmann
 fn Boltzmann::new(Double, Int, loc? : Double) -> Self
+impl RVDiscrete for Boltzmann
 
 type DLaplace
 fn DLaplace::new(Double, loc? : Double) -> Self
+impl RVDiscrete for DLaplace
 
 // Type aliases
 
