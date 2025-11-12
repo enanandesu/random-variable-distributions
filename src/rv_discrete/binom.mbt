@@ -116,21 +116,6 @@ pub impl RVDiscrete for Binom with isf(self, q) {
 }
 
 ///|
-pub impl RVDiscrete for Binom with logpmf(self, x) {
-  @math.ln(self.pmf(x))
-}
-
-///|
-pub impl RVDiscrete for Binom with logcdf(self, x) {
-  @math.ln(self.cdf(x))
-}
-
-///|
-pub impl RVDiscrete for Binom with logsf(self, x) {
-  @math.ln(self.sf(x))
-}
-
-///|
 pub impl RVDiscrete for Binom with mean(self) {
   self.loc + self.n.to_double() * self.p
 }

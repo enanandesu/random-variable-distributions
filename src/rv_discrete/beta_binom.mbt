@@ -128,21 +128,6 @@ pub impl RVDiscrete for BetaBinom with isf(self, q) {
 }
 
 ///|
-pub impl RVDiscrete for BetaBinom with logpmf(self, x) {
-  @math.ln(self.pmf(x))
-}
-
-///|
-pub impl RVDiscrete for BetaBinom with logcdf(self, x) {
-  @math.ln(self.cdf(x))
-}
-
-///|
-pub impl RVDiscrete for BetaBinom with logsf(self, x) {
-  @math.ln(self.sf(x))
-}
-
-///|
 pub impl RVDiscrete for BetaBinom with mean(self) {
   self.loc + self.n.to_double() * self.a / (self.a + self.b)
 }

@@ -70,21 +70,6 @@ pub impl RVContinuous for Normal with isf(self, q) {
 }
 
 ///|
-pub impl RVContinuous for Normal with logpdf(self, x) {
-  @math.ln(self.pdf(x))
-}
-
-///|
-pub impl RVContinuous for Normal with logcdf(self, x) {
-  @math.ln(self.cdf(x))
-}
-
-///|
-pub impl RVContinuous for Normal with logsf(self, x) {
-  @math.ln(self.sf(x))
-}
-
-///|
 pub impl RVContinuous for Normal with moment(self, n) {
   if n < 0 {
     abort("moment order must be non-negative")

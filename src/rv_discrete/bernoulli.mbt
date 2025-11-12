@@ -75,21 +75,6 @@ pub impl RVDiscrete for Bernoulli with isf(self, q) {
 }
 
 ///|
-pub impl RVDiscrete for Bernoulli with logpmf(self, x) {
-  @math.ln(self.pmf(x))
-}
-
-///|
-pub impl RVDiscrete for Bernoulli with logcdf(self, x) {
-  @math.ln(self.cdf(x))
-}
-
-///|
-pub impl RVDiscrete for Bernoulli with logsf(self, x) {
-  @math.ln(self.sf(x))
-}
-
-///|
 pub impl RVDiscrete for Bernoulli with mean(self) {
   self.loc + self.p
 }
