@@ -28,20 +28,20 @@ fn dlaplace_one_minus_q(a : Double) -> Double {
 }
 
 ///|
-pub impl RVDiscrete for DLaplace with rvs(self, size, seed) {
-  let rng = match seed {
-    Some(s) => @random.Rand::chacha8(seed=s)
-    None => @random.Rand::new()
-  }
+pub impl RVDiscrete for DLaplace with rvs(
+  self,
+  size,
+  rand? = @random.Rand::new(),
+) {
   let c = dlaplace_norm(self.a)
   let result = Array::new(capacity=size)
   for _i in 0..<size {
-    let u = rng.double()
+    let u = rand.double()
     if u < c {
       result.push(self.loc)
     } else {
-      let sign = if rng.double() < 0.5 { -1.0 } else { 1.0 }
-      let v = rng.double()
+      let sign = if rand.double() < 0.5 { -1.0 } else { 1.0 }
+      let v = rand.double()
       let mut geom = (@math.ln(1.0 - v) / -self.a).floor().to_int() + 1
       if geom < 1 {
         geom = 1

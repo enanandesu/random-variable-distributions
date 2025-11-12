@@ -81,11 +81,11 @@ fn boltzmann_index(value : Double, loc : Double, n : Int) -> Int? {
 }
 
 ///|
-pub impl RVDiscrete for Boltzmann with rvs(self, size, seed) {
-  let rng = match seed {
-    Some(s) => @random.Rand::chacha8(seed=s)
-    None => @random.Rand::new()
-  }
+pub impl RVDiscrete for Boltzmann with rvs(
+  self,
+  size,
+  rand? = @random.Rand::new(),
+) {
   let result = Array::new(capacity=size)
   let norm = boltzmann_norm(self.lambda, self.n)
   let q = boltzmann_q(self.lambda)
@@ -99,7 +99,7 @@ pub impl RVDiscrete for Boltzmann with rvs(self, size, seed) {
     weight *= q
   }
   for _i in 0..<size {
-    let u = rng.double()
+    let u = rand.double()
     let mut value = self.loc + (self.n - 1).to_double()
     for idx = 0; idx < cdf.length(); idx = idx + 1 {
       if u <= cdf[idx] {

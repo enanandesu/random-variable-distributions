@@ -13,14 +13,14 @@ pub fn Bernoulli::new(p : Double, loc? : Double = 0.0) -> Bernoulli {
 }
 
 ///|
-pub impl RVDiscrete for Bernoulli with rvs(self, size, seed) {
-  let rng = match seed {
-    Some(s) => @random.Rand::chacha8(seed=s)
-    None => @random.Rand::new()
-  }
+pub impl RVDiscrete for Bernoulli with rvs(
+  self,
+  size,
+  rand? = @random.Rand::new(),
+) {
   let result = Array::new(capacity=size)
   for i = 0; i < size; i = i + 1 {
-    let u = rng.double()
+    let u = rand.double()
     if u < self.p {
       result.push(self.loc + 1.0)
     } else {

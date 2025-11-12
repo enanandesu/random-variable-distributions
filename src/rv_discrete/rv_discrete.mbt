@@ -1,6 +1,6 @@
 ///|
 pub trait RVDiscrete {
-  rvs(Self, size : Int, seed : Bytes?) -> Array[Double]
+  rvs(Self, size : Int, rand? : @random.Rand) -> Array[Double]
   pmf(Self, k : Double) -> Double
   cdf(Self, x : Double) -> Double
   ppf(Self, q : Double) -> Double

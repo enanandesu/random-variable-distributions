@@ -130,7 +130,7 @@ test "Boltzmann::degenerate_case" {
   assert_true((dist.mean() - 4.0).abs() < 1.0e-9)
   assert_true((dist.varc() - 0.0).abs() < 1.0e-9)
   assert_true((dist.entropy() - 0.0).abs() < 1.0e-9)
-  let samples = dist.rvs(10, None)
+  let samples = dist.rvs(10)
   for value in samples {
     assert_true((value - 4.0).abs() < 1.0e-9)
   }
@@ -140,7 +140,7 @@ test "Boltzmann::degenerate_case" {
 test "Boltzmann::rvs" {
   let dist = Boltzmann::new(0.6, 6)
   let seed = b"12345678901234567890123456789012"
-  let samples = dist.rvs(50000, Some(seed))
+  let samples = dist.rvs(50000, rand=@random.Rand::chacha8(seed~))
   assert_eq(samples.length(), 50000)
   let counts = Array::make(dist.n, 0)
   for value in samples {

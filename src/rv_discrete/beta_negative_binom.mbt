@@ -26,18 +26,18 @@ pub fn BetaNegativeBinom::new(
 }
 
 ///|
-pub impl RVDiscrete for BetaNegativeBinom with rvs(self, size, seed) {
-  let rng = match seed {
-    Some(s) => @random.Rand::chacha8(seed=s)
-    None => @random.Rand::new()
-  }
+pub impl RVDiscrete for BetaNegativeBinom with rvs(
+  self,
+  size,
+  rand? = @random.Rand::new(),
+) {
   let result = Array::new(capacity=size)
   for i in 0..<size {
-    let p = generate_beta(self.a, self.b, rng)
+    let p = generate_beta(self.a, self.b, rand)
     let mut failures = 0.0
     let mut successes = 0
     while successes < self.n {
-      let u = rng.double()
+      let u = rand.double()
       if u < p {
         successes += 1
       } else {
