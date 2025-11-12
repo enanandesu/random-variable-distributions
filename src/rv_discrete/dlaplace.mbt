@@ -34,23 +34,18 @@ pub impl RVDiscrete for DLaplace with rvs(
   rand? = @random.Rand::new(),
 ) {
   let c = dlaplace_norm(self.a)
-  let result = Array::new(capacity=size)
-  for _i in 0..<size {
-    let u = rand.double()
-    if u < c {
-      result.push(self.loc)
-    } else {
-      let sign = if rand.double() < 0.5 { -1.0 } else { 1.0 }
-      let v = rand.double()
-      let mut geom = (@math.ln(1.0 - v) / -self.a).floor().to_int() + 1
-      if geom < 1 {
-        geom = 1
-      }
-      let offset = geom.to_double() * sign
-      result.push(self.loc + offset)
+  Array::makei(size, _ => if rand.double() < c {
+    self.loc
+  } else {
+    let sign = if rand.boolean() { -1.0 } else { 1.0 }
+    let v = rand.double()
+    let mut geom = (@math.ln(1.0 - v) / -self.a).floor().to_int() + 1
+    if geom < 1 {
+      geom = 1
     }
-  }
-  result
+    let offset = geom.to_double() * sign
+    self.loc + offset
+  })
 }
 
 ///|

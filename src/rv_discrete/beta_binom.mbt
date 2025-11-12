@@ -31,19 +31,16 @@ pub impl RVDiscrete for BetaBinom with rvs(
   size,
   rand? = @random.Rand::new(),
 ) {
-  let result = Array::new(capacity=size)
-  for i = 0; i < size; i = i + 1 {
+  Array::makei(size, _ => {
     let p = generate_beta(self.a, self.b, rand)
     let mut count = 0.0
-    for j = 0; j < self.n; j = j + 1 {
-      let u = rand.double()
-      if u < p {
+    for _ in 0..<self.n {
+      if rand.double() < p {
         count += 1.0
       }
     }
-    result.push(self.loc + count)
-  }
-  result
+    self.loc + count
+  })
 }
 
 ///|

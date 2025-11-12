@@ -13,22 +13,20 @@ pub fn Chi2::new(k : Double) -> Chi2 {
 
 ///|
 pub impl RVContinuous for Chi2 with rvs(self, size, rand? = @random.Rand::new()) {
-  let mut samples = Array::new(capacity=size)
-  let normal = Normal::new()
   if self.k.floor() == self.k {
-    for _ in 0..<size {
+    let normal = Normal::new()
+    let k_int = self.k.to_int()
+    Array::makei(size, _ => {
       let mut chi2_sample = 0.0
-      let k_int = self.k.to_int()
       for _ in 0..<k_int {
         let z = normal.rvs(1, rand~)[0]
         chi2_sample += z * z
       }
-      samples.push(chi2_sample)
-    }
+      chi2_sample
+    })
   } else {
-    samples = Gamma::new(self.k / 2.0, theta=2.0).rvs(size, rand~)
+    Gamma::new(self.k / 2.0, theta=2.0).rvs(size, rand~)
   }
-  samples
 }
 
 ///|

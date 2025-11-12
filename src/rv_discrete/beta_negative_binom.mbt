@@ -31,8 +31,7 @@ pub impl RVDiscrete for BetaNegativeBinom with rvs(
   size,
   rand? = @random.Rand::new(),
 ) {
-  let result = Array::new(capacity=size)
-  for i in 0..<size {
+  Array::makei(size, _ => {
     let p = generate_beta(self.a, self.b, rand)
     let mut failures = 0.0
     let mut successes = 0
@@ -44,9 +43,8 @@ pub impl RVDiscrete for BetaNegativeBinom with rvs(
         failures += 1.0
       }
     }
-    result.push(self.loc + failures)
-  }
-  result
+    self.loc + failures
+  })
 }
 
 ///|

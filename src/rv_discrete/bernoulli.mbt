@@ -18,16 +18,11 @@ pub impl RVDiscrete for Bernoulli with rvs(
   size,
   rand? = @random.Rand::new(),
 ) {
-  let result = Array::new(capacity=size)
-  for i = 0; i < size; i = i + 1 {
-    let u = rand.double()
-    if u < self.p {
-      result.push(self.loc + 1.0)
-    } else {
-      result.push(self.loc)
-    }
-  }
-  result
+  Array::makei(size, _ => if rand.double() < self.p {
+    self.loc + 1.0
+  } else {
+    self.loc
+  })
 }
 
 ///|

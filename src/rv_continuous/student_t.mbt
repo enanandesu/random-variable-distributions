@@ -20,17 +20,14 @@ pub impl RVContinuous for StudentT with rvs(
   size,
   rand? = @random.Rand::new(),
 ) {
-  let samples = Array::new(capacity=size)
   let normal = Normal::new()
   let chi2 = Chi2::new(self.df)
-  for _ in 0..<size {
+  Array::makei(size, _ => {
     let z = normal.rvs(1, rand~)[0]
     let v = chi2.rvs(1, rand~)[0]
     let t_standard = z / (v / self.df).sqrt()
-    let t_sample = self.loc + self.scale * t_standard
-    samples.push(t_sample)
-  }
-  samples
+    self.loc + self.scale * t_standard
+  })
 }
 
 ///|

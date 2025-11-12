@@ -21,16 +21,14 @@ pub impl RVContinuous for Gamma with rvs(
   size,
   rand? = @random.Rand::new(),
 ) {
-  let samples = Array::new(capacity=size)
-  for _ in 0..<size {
-    let sample = if self.k >= 1.0 {
-      gamma_marsaglia_tsang(self.k, rand)
+  Array::makei(
+    size,
+    if self.k >= 1.0 {
+      _ => gamma_marsaglia_tsang(self.k, rand) * self.theta
     } else {
-      gamma_ahrens_dieter(self.k, rand)
-    }
-    samples.push(sample * self.theta)
-  }
-  samples
+      _ => gamma_ahrens_dieter(self.k, rand) * self.theta
+    },
+  )
 }
 
 ///|

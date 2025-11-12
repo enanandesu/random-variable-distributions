@@ -18,18 +18,15 @@ pub fn Binom::new(n : Int, p : Double, loc? : Double = 0.0) -> Binom {
 
 ///|
 pub impl RVDiscrete for Binom with rvs(self, size, rand? = @random.Rand::new()) {
-  let result = Array::new(capacity=size)
-  for i = 0; i < size; i = i + 1 {
+  Array::makei(size, _ => {
     let mut count = 0.0
-    for j = 0; j < self.n; j = j + 1 {
-      let u = rand.double()
-      if u < self.p {
+    for _ in 0..<self.n {
+      if rand.double() < self.p {
         count += 1.0
       }
     }
-    result.push(self.loc + count)
-  }
-  result
+    self.loc + count
+  })
 }
 
 ///|

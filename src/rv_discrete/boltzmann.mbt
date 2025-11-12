@@ -86,30 +86,26 @@ pub impl RVDiscrete for Boltzmann with rvs(
   size,
   rand? = @random.Rand::new(),
 ) {
-  let result = Array::new(capacity=size)
   let norm = boltzmann_norm(self.lambda, self.n)
   let q = boltzmann_q(self.lambda)
-  let cdf = Array::new(capacity=self.n)
   let mut cumulative = 0.0
   let mut weight = 1.0
-  for idx = 0; idx < self.n; idx = idx + 1 {
+  let cdf = Array::makei(self.n, _ => {
     let prob = norm * weight
     cumulative += prob
-    cdf.push(cumulative)
     weight *= q
-  }
-  for _i in 0..<size {
+    cumulative
+  })
+  Array::makei(size, _ => {
     let u = rand.double()
-    let mut value = self.loc + (self.n - 1).to_double()
-    for idx = 0; idx < cdf.length(); idx = idx + 1 {
-      if u <= cdf[idx] {
-        value = self.loc + idx.to_double()
-        break
+    for idx, x in cdf {
+      if u <= x {
+        break self.loc + idx.to_double()
       }
+    } else {
+      self.loc + (self.n - 1).to_double()
     }
-    result.push(value)
-  }
-  result
+  })
 }
 
 ///|
