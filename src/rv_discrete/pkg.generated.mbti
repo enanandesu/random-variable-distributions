@@ -1,0 +1,49 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "enanandesu/random-variable-distributions/rv_discrete"
+
+// Values
+
+// Errors
+
+// Types and methods
+type Bernoulli
+fn Bernoulli::new(Double, loc? : Double) -> Self
+
+type BetaBinom
+fn BetaBinom::new(Int, Double, Double, loc? : Double) -> Self
+
+type BetaNegativeBinom
+fn BetaNegativeBinom::new(Int, Double, Double, loc? : Double) -> Self
+
+type Binom
+fn Binom::new(Int, Double, loc? : Double) -> Self
+
+type Boltzmann
+fn Boltzmann::new(Double, Int, loc? : Double) -> Self
+
+type DLaplace
+fn DLaplace::new(Double, loc? : Double) -> Self
+
+// Type aliases
+
+// Traits
+pub trait RVDiscrete {
+  rvs(Self, Int, Bytes?) -> Array[Double]
+  pmf(Self, Double) -> Double
+  cdf(Self, Double) -> Double
+  ppf(Self, Double) -> Double
+  sf(Self, Double) -> Double
+  isf(Self, Double) -> Double
+  logpmf(Self, Double) -> Double
+  logcdf(Self, Double) -> Double
+  logsf(Self, Double) -> Double
+  entropy(Self) -> Double
+  median(Self) -> Double
+  mean(Self) -> Double
+  varc(Self) -> Double
+  std(Self) -> Double
+  interval(Self, Double) -> (Double, Double)
+  skew(Self) -> Double
+  kurt(Self) -> Double
+}
+

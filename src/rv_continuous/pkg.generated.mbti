@@ -1,0 +1,50 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "enanandesu/random-variable-distributions/rv_continuous"
+
+// Values
+
+// Errors
+
+// Types and methods
+type Chi2
+fn Chi2::new(Double) -> Self
+
+type Exponential
+fn Exponential::new(loc? : Double, scale? : Double) -> Self
+
+type F
+fn F::new(Double, Double, loc? : Double, scale? : Double) -> Self
+
+type Gamma
+fn Gamma::new(Double, theta? : Double) -> Self
+
+type Normal
+fn Normal::new(loc? : Double, scale? : Double) -> Self
+
+type StudentT
+fn StudentT::new(Double, loc? : Double, scale? : Double) -> Self
+
+// Type aliases
+
+// Traits
+pub trait RVContinuous {
+  rvs(Self, Int, Bytes?) -> Array[Double]
+  pdf(Self, Double) -> Double
+  cdf(Self, Double) -> Double
+  ppf(Self, Double) -> Double
+  sf(Self, Double) -> Double
+  isf(Self, Double) -> Double
+  logpdf(Self, Double) -> Double
+  logcdf(Self, Double) -> Double
+  logsf(Self, Double) -> Double
+  moment(Self, Int) -> Double
+  entropy(Self) -> Double
+  median(Self) -> Double
+  mean(Self) -> Double
+  varc(Self) -> Double
+  std(Self) -> Double
+  interval(Self, Double) -> (Double, Double)
+  skew(Self) -> Double
+  kurt(Self) -> Double
+}
+
