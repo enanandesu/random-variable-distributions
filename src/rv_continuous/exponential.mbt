@@ -68,27 +68,19 @@ fn exp_binomial_coefficient(n : Int, k : Int) -> Int {
 }
 
 ///|
-impl RVContinuous for Exponential with rvs(self, size, seed) {
-  let rng = match seed {
-    Some(val) => @random.Rand::chacha8(seed=val)
-    None => @random.Rand::new()
-  }
-  let samples = Array::new(capacity=size)
-  for _i in 0..<size {
-    let mut u = rng.double()
-    if u <= 0.0 {
-      u = 1.0e-12
-    } else if u >= 1.0 {
-      u = 1.0 - 1.0e-12
-    }
-    let value = self.loc - self.scale * @math.ln(1.0 - u)
-    samples.push(value)
-  }
-  samples
+pub impl RVContinuous for Exponential with rvs(
+  self,
+  size,
+  rand? = @random.Rand::new(),
+) {
+  Array::makei(size, _ => {
+    let u = rand.double()
+    self.loc - self.scale * @math.ln(1.0 - u)
+  })
 }
 
 ///|
-impl RVContinuous for Exponential with pdf(self, x) {
+pub impl RVContinuous for Exponential with pdf(self, x) {
   if x < self.loc {
     0.0
   } else {
@@ -97,7 +89,7 @@ impl RVContinuous for Exponential with pdf(self, x) {
 }
 
 ///|
-impl RVContinuous for Exponential with cdf(self, x) {
+pub impl RVContinuous for Exponential with cdf(self, x) {
   if x < self.loc {
     0.0
   } else {
@@ -106,7 +98,7 @@ impl RVContinuous for Exponential with cdf(self, x) {
 }
 
 ///|
-impl RVContinuous for Exponential with ppf(self, q) {
+pub impl RVContinuous for Exponential with ppf(self, q) {
   if q <= 0.0 || q >= 1.0 {
     abort("q must be in (0, 1)")
   }
@@ -114,7 +106,7 @@ impl RVContinuous for Exponential with ppf(self, q) {
 }
 
 ///|
-impl RVContinuous for Exponential with sf(self, x) {
+pub impl RVContinuous for Exponential with sf(self, x) {
   if x < self.loc {
     1.0
   } else {
@@ -123,7 +115,7 @@ impl RVContinuous for Exponential with sf(self, x) {
 }
 
 ///|
-impl RVContinuous for Exponential with isf(self, q) {
+pub impl RVContinuous for Exponential with isf(self, q) {
   if q <= 0.0 || q >= 1.0 {
     abort("q must be in (0, 1)")
   }
@@ -131,7 +123,7 @@ impl RVContinuous for Exponential with isf(self, q) {
 }
 
 ///|
-impl RVContinuous for Exponential with logpdf(self, x) {
+pub impl RVContinuous for Exponential with logpdf(self, x) {
   if x < self.loc {
     @double.neg_infinity
   } else {
@@ -140,7 +132,7 @@ impl RVContinuous for Exponential with logpdf(self, x) {
 }
 
 ///|
-impl RVContinuous for Exponential with logcdf(self, x) {
+pub impl RVContinuous for Exponential with logcdf(self, x) {
   let value = self.cdf(x)
   if value <= 0.0 {
     @double.neg_infinity
@@ -150,7 +142,7 @@ impl RVContinuous for Exponential with logcdf(self, x) {
 }
 
 ///|
-impl RVContinuous for Exponential with logsf(self, x) {
+pub impl RVContinuous for Exponential with logsf(self, x) {
   let value = self.sf(x)
   if value <= 0.0 {
     @double.neg_infinity
@@ -160,7 +152,7 @@ impl RVContinuous for Exponential with logsf(self, x) {
 }
 
 ///|
-impl RVContinuous for Exponential with moment(self, n) {
+pub impl RVContinuous for Exponential with moment(self, n) {
   if n < 0 {
     abort("moment order must be non-negative")
   }
@@ -172,32 +164,32 @@ impl RVContinuous for Exponential with moment(self, n) {
 }
 
 ///|
-impl RVContinuous for Exponential with entropy(self) {
+pub impl RVContinuous for Exponential with entropy(self) {
   1.0 + @math.ln(self.scale)
 }
 
 ///|
-impl RVContinuous for Exponential with median(self) {
+pub impl RVContinuous for Exponential with median(self) {
   self.loc + self.scale * @math.ln(2.0)
 }
 
 ///|
-impl RVContinuous for Exponential with mean(self) {
+pub impl RVContinuous for Exponential with mean(self) {
   self.loc + self.scale
 }
 
 ///|
-impl RVContinuous for Exponential with varc(self) {
+pub impl RVContinuous for Exponential with varc(self) {
   self.scale * self.scale
 }
 
 ///|
-impl RVContinuous for Exponential with std(self) {
+pub impl RVContinuous for Exponential with std(self) {
   self.scale
 }
 
 ///|
-impl RVContinuous for Exponential with interval(self, alpha : Double) {
+pub impl RVContinuous for Exponential with interval(self, alpha : Double) {
   if alpha <= 0.0 || alpha >= 1.0 {
     abort("alpha must be in (0, 1)")
   }
@@ -207,11 +199,11 @@ impl RVContinuous for Exponential with interval(self, alpha : Double) {
 }
 
 ///|
-impl RVContinuous for Exponential with skew(_) {
+pub impl RVContinuous for Exponential with skew(_) {
   2.0
 }
 
 ///|
-impl RVContinuous for Exponential with kurt(_) {
+pub impl RVContinuous for Exponential with kurt(_) {
   6.0
 }

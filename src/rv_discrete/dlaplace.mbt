@@ -28,33 +28,28 @@ fn dlaplace_one_minus_q(a : Double) -> Double {
 }
 
 ///|
-impl RVDiscrete for DLaplace with rvs(self, size, seed) {
-  let rng = match seed {
-    Some(s) => @random.Rand::chacha8(seed=s)
-    None => @random.Rand::new()
-  }
+pub impl RVDiscrete for DLaplace with rvs(
+  self,
+  size,
+  rand? = @random.Rand::new(),
+) {
   let c = dlaplace_norm(self.a)
-  let result = Array::new(capacity=size)
-  for _i in 0..<size {
-    let u = rng.double()
-    if u < c {
-      result.push(self.loc)
-    } else {
-      let sign = if rng.double() < 0.5 { -1.0 } else { 1.0 }
-      let v = rng.double()
-      let mut geom = (@math.ln(1.0 - v) / -self.a).floor().to_int() + 1
-      if geom < 1 {
-        geom = 1
-      }
-      let offset = geom.to_double() * sign
-      result.push(self.loc + offset)
+  Array::makei(size, _ => if rand.double() < c {
+    self.loc
+  } else {
+    let sign = if rand.boolean() { -1.0 } else { 1.0 }
+    let v = rand.double()
+    let mut geom = (@math.ln(1.0 - v) / -self.a).floor().to_int() + 1
+    if geom < 1 {
+      geom = 1
     }
-  }
-  result
+    let offset = geom.to_double() * sign
+    self.loc + offset
+  })
 }
 
 ///|
-impl RVDiscrete for DLaplace with pmf(self, k) {
+pub impl RVDiscrete for DLaplace with pmf(self, k) {
   let diff = k - self.loc
   if diff != diff.round() {
     0.0
@@ -66,7 +61,7 @@ impl RVDiscrete for DLaplace with pmf(self, k) {
 }
 
 ///|
-impl RVDiscrete for DLaplace with logpmf(self, k) {
+pub impl RVDiscrete for DLaplace with logpmf(self, k) {
   let diff = k - self.loc
   if diff != diff.round() {
     @double.neg_infinity
@@ -76,7 +71,7 @@ impl RVDiscrete for DLaplace with logpmf(self, k) {
 }
 
 ///|
-impl RVDiscrete for DLaplace with cdf(self, x) {
+pub impl RVDiscrete for DLaplace with cdf(self, x) {
   let q = dlaplace_q(self.a)
   let one_minus_q = dlaplace_one_minus_q(self.a)
   let norm = dlaplace_norm(self.a)
@@ -91,7 +86,7 @@ impl RVDiscrete for DLaplace with cdf(self, x) {
 }
 
 ///|
-impl RVDiscrete for DLaplace with ppf(self, q) {
+pub impl RVDiscrete for DLaplace with ppf(self, q) {
   if q <= 0.0 || q >= 1.0 {
     abort("q must be in (0, 1)")
   }
@@ -122,12 +117,12 @@ impl RVDiscrete for DLaplace with ppf(self, q) {
 }
 
 ///|
-impl RVDiscrete for DLaplace with sf(self, x) {
+pub impl RVDiscrete for DLaplace with sf(self, x) {
   1.0 - self.cdf(x)
 }
 
 ///|
-impl RVDiscrete for DLaplace with isf(self, q) {
+pub impl RVDiscrete for DLaplace with isf(self, q) {
   if q <= 0.0 || q >= 1.0 {
     abort("q must be in (0, 1)")
   }
@@ -135,7 +130,7 @@ impl RVDiscrete for DLaplace with isf(self, q) {
 }
 
 ///|
-impl RVDiscrete for DLaplace with logcdf(self, x) {
+pub impl RVDiscrete for DLaplace with logcdf(self, x) {
   let value = self.cdf(x)
   if value <= 0.0 {
     @double.neg_infinity
@@ -145,7 +140,7 @@ impl RVDiscrete for DLaplace with logcdf(self, x) {
 }
 
 ///|
-impl RVDiscrete for DLaplace with logsf(self, x) {
+pub impl RVDiscrete for DLaplace with logsf(self, x) {
   let value = self.sf(x)
   if value <= 0.0 {
     @double.neg_infinity
@@ -155,34 +150,34 @@ impl RVDiscrete for DLaplace with logsf(self, x) {
 }
 
 ///|
-impl RVDiscrete for DLaplace with entropy(self) {
+pub impl RVDiscrete for DLaplace with entropy(self) {
   self.a / @math.sinh(self.a) - @math.ln(@math.tanh(self.a / 2.0))
 }
 
 ///|
-impl RVDiscrete for DLaplace with median(self) {
+pub impl RVDiscrete for DLaplace with median(self) {
   self.loc
 }
 
 ///|
-impl RVDiscrete for DLaplace with mean(self) {
+pub impl RVDiscrete for DLaplace with mean(self) {
   self.loc
 }
 
 ///|
-impl RVDiscrete for DLaplace with varc(self) {
+pub impl RVDiscrete for DLaplace with varc(self) {
   let decay = dlaplace_q(self.a)
   let one_minus_q = dlaplace_one_minus_q(self.a)
   2.0 * decay / (one_minus_q * one_minus_q)
 }
 
 ///|
-impl RVDiscrete for DLaplace with std(self) {
+pub impl RVDiscrete for DLaplace with std(self) {
   self.varc().sqrt()
 }
 
 ///|
-impl RVDiscrete for DLaplace with interval(self, alpha : Double) {
+pub impl RVDiscrete for DLaplace with interval(self, alpha : Double) {
   if alpha < 0.0 || alpha > 1.0 {
     abort("alpha must be in [0, 1]")
   }
@@ -192,12 +187,12 @@ impl RVDiscrete for DLaplace with interval(self, alpha : Double) {
 }
 
 ///|
-impl RVDiscrete for DLaplace with skew(_) {
+pub impl RVDiscrete for DLaplace with skew(_) {
   0.0
 }
 
 ///|
-impl RVDiscrete for DLaplace with kurt(self) {
+pub impl RVDiscrete for DLaplace with kurt(self) {
   let decay = dlaplace_q(self.a)
   let numerator = 1.0 + 10.0 * decay + decay * decay
   numerator / (2.0 * decay) - 3.0

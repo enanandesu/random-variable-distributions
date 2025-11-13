@@ -5,21 +5,21 @@ struct Normal {
 }
 
 ///|
-pub fn Normal::new(loc~ : Double = 0.0, scale~ : Double = 1.0) -> Normal {
+pub fn Normal::new(loc? : Double = 0.0, scale? : Double = 1.0) -> Normal {
   { loc, scale }
 }
 
 ///|
-impl RVContinuous for Normal with rvs(self, size, seed) {
+pub impl RVContinuous for Normal with rvs(
+  self,
+  size,
+  rand? = @random.Rand::new(),
+) {
   let samples = Array::new(capacity=size)
   let mut i = 0
-  let rdm = match seed {
-    None => @random.Rand::new()
-    Some(val) => @random.Rand::chacha8(seed=val)
-  }
   while i < size {
-    let u1 = rdm.double()
-    let u2 = rdm.double()
+    let u1 = rand.double()
+    let u2 = rand.double()
     let u1_safe = if u1 <= 0.0 { 1.0e-10 } else { u1 }
     let factor = (-2.0 * @math.ln(u1_safe)).sqrt()
     let theta = 2.0 * @math.PI * u2
@@ -36,20 +36,20 @@ impl RVContinuous for Normal with rvs(self, size, seed) {
 }
 
 ///|
-impl RVContinuous for Normal with pdf(self, x) {
+pub impl RVContinuous for Normal with pdf(self, x) {
   let z = (x - self.loc) / self.scale
   let factor = 1.0 / (self.scale * (2.0 * @math.PI).sqrt())
   factor * @math.exp(-0.5 * z * z)
 }
 
 ///|
-impl RVContinuous for Normal with cdf(self, x) {
+pub impl RVContinuous for Normal with cdf(self, x) {
   let z = (x - self.loc) / self.scale
   0.5 * (1.0 + @kmath.erf(z / 2.0.sqrt()))
 }
 
 ///|
-impl RVContinuous for Normal with ppf(self, q) {
+pub impl RVContinuous for Normal with ppf(self, q) {
   if q <= 0.0 || q >= 1.0 {
     abort("q must be in (0, 1)")
   }
@@ -57,12 +57,12 @@ impl RVContinuous for Normal with ppf(self, q) {
 }
 
 ///|
-impl RVContinuous for Normal with sf(self, x) {
+pub impl RVContinuous for Normal with sf(self, x) {
   1.0 - self.cdf(x)
 }
 
 ///|
-impl RVContinuous for Normal with isf(self, q) {
+pub impl RVContinuous for Normal with isf(self, q) {
   if q <= 0.0 || q >= 1.0 {
     abort("q must be in (0, 1)")
   }
@@ -70,22 +70,7 @@ impl RVContinuous for Normal with isf(self, q) {
 }
 
 ///|
-impl RVContinuous for Normal with logpdf(self, x) {
-  @math.ln(self.pdf(x))
-}
-
-///|
-impl RVContinuous for Normal with logcdf(self, x) {
-  @math.ln(self.cdf(x))
-}
-
-///|
-impl RVContinuous for Normal with logsf(self, x) {
-  @math.ln(self.sf(x))
-}
-
-///|
-impl RVContinuous for Normal with moment(self, n) {
+pub impl RVContinuous for Normal with moment(self, n) {
   if n < 0 {
     abort("moment order must be non-negative")
   }
@@ -104,32 +89,32 @@ impl RVContinuous for Normal with moment(self, n) {
 }
 
 ///|
-impl RVContinuous for Normal with mean(self) {
+pub impl RVContinuous for Normal with mean(self) {
   self.loc
 }
 
 ///|
-impl RVContinuous for Normal with median(self) {
+pub impl RVContinuous for Normal with median(self) {
   self.loc
 }
 
 ///|
-impl RVContinuous for Normal with varc(self) {
+pub impl RVContinuous for Normal with varc(self) {
   self.scale * self.scale
 }
 
 ///|
-impl RVContinuous for Normal with std(self) {
+pub impl RVContinuous for Normal with std(self) {
   self.scale
 }
 
 ///|
-impl RVContinuous for Normal with entropy(self) {
+pub impl RVContinuous for Normal with entropy(self) {
   0.5 * (@math.ln(2.0 * @math.PI * self.scale * self.scale) + 1.0)
 }
 
 ///|
-impl RVContinuous for Normal with interval(self, alpha : Double) {
+pub impl RVContinuous for Normal with interval(self, alpha : Double) {
   if alpha <= 0.0 || alpha >= 1.0 {
     abort("alpha must be in (0, 1)")
   }
@@ -139,12 +124,12 @@ impl RVContinuous for Normal with interval(self, alpha : Double) {
 }
 
 ///|
-impl RVContinuous for Normal with skew(_) {
+pub impl RVContinuous for Normal with skew(_) {
   0.0
 }
 
 ///|
-impl RVContinuous for Normal with kurt(_) {
+pub impl RVContinuous for Normal with kurt(_) {
   0.0
 }
 
@@ -180,11 +165,4 @@ fn double_factorial(n : Int) -> Int {
   } else {
     n * double_factorial(n - 2)
   }
-}
-
-///|
-fn derive_seed(seed : Bytes) -> Bytes {
-  // 每次调用都会吐出一个新的 32 字节种子
-  let r = @random.Rand::chacha8(seed~)
-  Bytes::makei(32, _ => r.uint(limit=256U).to_byte())
 }

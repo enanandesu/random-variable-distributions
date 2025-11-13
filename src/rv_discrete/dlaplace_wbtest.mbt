@@ -94,7 +94,7 @@ test "DLaplace::log_functions" {
 test "DLaplace::rvs" {
   let dist = DLaplace::new(0.5, loc=0.0)
   let seed = b"12345678901234567890123456789012"
-  let samples = dist.rvs(50000, Some(seed))
+  let samples = dist.rvs(50000, rand=@random.Rand::chacha8(seed~))
   assert_eq(samples.length(), 50000)
   let max_k = 10
   let size = 2 * max_k + 1

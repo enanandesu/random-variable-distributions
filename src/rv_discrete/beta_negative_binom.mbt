@@ -26,36 +26,34 @@ pub fn BetaNegativeBinom::new(
 }
 
 ///|
-impl RVDiscrete for BetaNegativeBinom with rvs(self, size, seed) {
-  let rng = match seed {
-    Some(s) => @random.Rand::chacha8(seed=s)
-    None => @random.Rand::new()
-  }
-  let result = Array::new(capacity=size)
-  for i in 0..<size {
-    let p = generate_beta(self.a, self.b, rng)
+pub impl RVDiscrete for BetaNegativeBinom with rvs(
+  self,
+  size,
+  rand? = @random.Rand::new(),
+) {
+  Array::makei(size, _ => {
+    let p = generate_beta(self.a, self.b, rand)
     let mut failures = 0.0
     let mut successes = 0
     while successes < self.n {
-      let u = rng.double()
+      let u = rand.double()
       if u < p {
         successes += 1
       } else {
         failures += 1.0
       }
     }
-    result.push(self.loc + failures)
-  }
-  result
+    self.loc + failures
+  })
 }
 
 ///|
-impl RVDiscrete for BetaNegativeBinom with pmf(self, k) {
+pub impl RVDiscrete for BetaNegativeBinom with pmf(self, k) {
   @math.exp(self.logpmf(k))
 }
 
 ///|
-impl RVDiscrete for BetaNegativeBinom with cdf(self, x) {
+pub impl RVDiscrete for BetaNegativeBinom with cdf(self, x) {
   let k_max = (x - self.loc).floor().to_int()
   if k_max < 0 {
     0.0
@@ -69,7 +67,7 @@ impl RVDiscrete for BetaNegativeBinom with cdf(self, x) {
 }
 
 ///|
-impl RVDiscrete for BetaNegativeBinom with ppf(self, q) {
+pub impl RVDiscrete for BetaNegativeBinom with ppf(self, q) {
   if q < 0.0 || q >= 1.0 {
     abort("q must be in [0, 1)")
   }
@@ -90,12 +88,12 @@ impl RVDiscrete for BetaNegativeBinom with ppf(self, q) {
 }
 
 ///|
-impl RVDiscrete for BetaNegativeBinom with sf(self, x) {
+pub impl RVDiscrete for BetaNegativeBinom with sf(self, x) {
   1.0 - self.cdf(x)
 }
 
 ///|
-impl RVDiscrete for BetaNegativeBinom with isf(self, q) {
+pub impl RVDiscrete for BetaNegativeBinom with isf(self, q) {
   if q <= 0.0 || q > 1.0 {
     abort("q must be in (0, 1]")
   }
@@ -116,7 +114,7 @@ fn log_combination(n : Int, k : Int) -> Double {
 }
 
 ///|
-impl RVDiscrete for BetaNegativeBinom with logpmf(self, k) {
+pub impl RVDiscrete for BetaNegativeBinom with logpmf(self, k) {
   let diff = k - self.loc
   if diff != diff.round() || diff < 0.0 {
     @double.neg_infinity
@@ -130,17 +128,17 @@ impl RVDiscrete for BetaNegativeBinom with logpmf(self, k) {
 }
 
 ///|
-impl RVDiscrete for BetaNegativeBinom with logcdf(self, x) {
+pub impl RVDiscrete for BetaNegativeBinom with logcdf(self, x) {
   @math.ln(self.cdf(x))
 }
 
 ///|
-impl RVDiscrete for BetaNegativeBinom with logsf(self, x) {
+pub impl RVDiscrete for BetaNegativeBinom with logsf(self, x) {
   @math.ln(self.sf(x))
 }
 
 ///|
-impl RVDiscrete for BetaNegativeBinom with mean(self) {
+pub impl RVDiscrete for BetaNegativeBinom with mean(self) {
   if self.a <= 1.0 {
     @double.infinity
   } else {
@@ -149,12 +147,12 @@ impl RVDiscrete for BetaNegativeBinom with mean(self) {
 }
 
 ///|
-impl RVDiscrete for BetaNegativeBinom with median(self) {
+pub impl RVDiscrete for BetaNegativeBinom with median(self) {
   self.ppf(0.5)
 }
 
 ///|
-impl RVDiscrete for BetaNegativeBinom with varc(self) {
+pub impl RVDiscrete for BetaNegativeBinom with varc(self) {
   if self.a <= 2.0 {
     @double.infinity
   } else {
@@ -166,12 +164,12 @@ impl RVDiscrete for BetaNegativeBinom with varc(self) {
 }
 
 ///|
-impl RVDiscrete for BetaNegativeBinom with std(self) {
+pub impl RVDiscrete for BetaNegativeBinom with std(self) {
   self.varc().sqrt()
 }
 
 ///|
-impl RVDiscrete for BetaNegativeBinom with entropy(self) {
+pub impl RVDiscrete for BetaNegativeBinom with entropy(self) {
   let mut entropy = 0.0
   let mut cumsum = 0.0
   let max_k = 1_000
@@ -192,7 +190,7 @@ impl RVDiscrete for BetaNegativeBinom with entropy(self) {
 }
 
 ///|
-impl RVDiscrete for BetaNegativeBinom with interval(self, alpha : Double) {
+pub impl RVDiscrete for BetaNegativeBinom with interval(self, alpha : Double) {
   if alpha < 0.0 || alpha > 1.0 {
     abort("alpha must be in [0, 1]")
   }
@@ -202,7 +200,7 @@ impl RVDiscrete for BetaNegativeBinom with interval(self, alpha : Double) {
 }
 
 ///|
-impl RVDiscrete for BetaNegativeBinom with skew(self) {
+pub impl RVDiscrete for BetaNegativeBinom with skew(self) {
   if self.a <= 3.0 {
     @double.infinity
   } else {
@@ -216,7 +214,7 @@ impl RVDiscrete for BetaNegativeBinom with skew(self) {
 }
 
 ///|
-impl RVDiscrete for BetaNegativeBinom with kurt(self) {
+pub impl RVDiscrete for BetaNegativeBinom with kurt(self) {
   let n = self.n.to_double()
   let a = self.a
   let b = self.b

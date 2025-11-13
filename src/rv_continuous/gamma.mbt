@@ -5,7 +5,7 @@ struct Gamma {
 }
 
 ///|
-pub fn Gamma::new(k : Double, theta~ : Double = 1.0) -> Gamma {
+pub fn Gamma::new(k : Double, theta? : Double = 1.0) -> Gamma {
   if k <= 0.0 {
     abort("k (shape parameter) must be positive")
   }
@@ -16,42 +16,32 @@ pub fn Gamma::new(k : Double, theta~ : Double = 1.0) -> Gamma {
 }
 
 ///|
-impl RVContinuous for Gamma with rvs(self, size, seed) {
-  let samples = Array::new(capacity=size)
-  let mut seed_tmp = seed
-  for _ in 0..<size {
-    let (sample, seed_now) = if self.k >= 1.0 {
-      gamma_marsaglia_tsang(self.k, seed_tmp)
+pub impl RVContinuous for Gamma with rvs(
+  self,
+  size,
+  rand? = @random.Rand::new(),
+) {
+  Array::makei(
+    size,
+    if self.k >= 1.0 {
+      _ => gamma_marsaglia_tsang(self.k, rand) * self.theta
     } else {
-      gamma_ahrens_dieter(self.k, seed_tmp)
-    }
-    samples.push(sample * self.theta)
-    seed_tmp = Some(seed_now)
-  }
-  samples
+      _ => gamma_ahrens_dieter(self.k, rand) * self.theta
+    },
+  )
 }
 
 ///|
-fn gamma_marsaglia_tsang(k : Double, seed : Bytes?) -> (Double, Bytes) {
+fn gamma_marsaglia_tsang(k : Double, rand : @random.Rand) -> Double {
   let d = k - 1.0 / 3.0
   let c = 1.0 / (9.0 * d).sqrt()
-  let mut seed_val = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ123456"
-  let rdm = match seed {
-    None => @random.Rand::new()
-    Some(val) => {
-      seed_val = val
-      @random.Rand::chacha8(seed=val)
-    }
-  }
   let mut ans = 0.0
-  let mut last_seed = derive_seed(seed_val)
   while true {
-    let x = Normal::new().rvs(1, Some(last_seed))[0]
-    last_seed = derive_seed(seed_val)
+    let x = Normal::new().rvs(1, rand~)[0]
     let v = 1.0 + c * x
     if v > 0.0 {
       let v3 = v * v * v
-      let u = rdm.double()
+      let u = rand.double()
       if u < 1.0 - 0.0331 * x * x * x * x {
         ans = d * v3
         break
@@ -62,44 +52,35 @@ fn gamma_marsaglia_tsang(k : Double, seed : Bytes?) -> (Double, Bytes) {
       }
     }
   }
-  (ans, last_seed)
+  ans
 }
 
 ///|
-fn gamma_ahrens_dieter(k : Double, seed : Bytes?) -> (Double, Bytes) {
+fn gamma_ahrens_dieter(k : Double, rand : @random.Rand) -> Double {
   let e = @kmath.E
-  let mut seed_val = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ123456"
-  let rdm = match seed {
-    None => @random.Rand::new()
-    Some(val) => {
-      seed_val = val
-      @random.Rand::chacha8(seed=val)
-    }
-  }
-  seed_val = derive_seed(seed_val)
   while true {
-    let u = rdm.double()
-    let v = rdm.double()
+    let u = rand.double()
+    let v = rand.double()
     if u <= e / (e + k) {
       let x = @math.pow(v, 1.0 / k)
       let y = @math.exp(-x)
-      if rdm.double() <= y {
-        break (x, seed_val)
+      if rand.double() <= y {
+        break x
       }
     } else {
       let x = -@math.ln(v)
       let y = @math.pow(x, k - 1.0)
-      if rdm.double() <= y {
-        break (x, seed_val)
+      if rand.double() <= y {
+        break x
       }
     }
   } else {
-    (0.0, seed_val)
+    0.0
   }
 }
 
 ///|
-impl RVContinuous for Gamma with pdf(self, x) {
+pub impl RVContinuous for Gamma with pdf(self, x) {
   if x <= 0.0 {
     return 0.0
   }
@@ -109,7 +90,7 @@ impl RVContinuous for Gamma with pdf(self, x) {
 }
 
 ///|
-impl RVContinuous for Gamma with cdf(self, x) {
+pub impl RVContinuous for Gamma with cdf(self, x) {
   if x <= 0.0 {
     return 0.0
   }
@@ -117,7 +98,7 @@ impl RVContinuous for Gamma with cdf(self, x) {
 }
 
 ///|
-impl RVContinuous for Gamma with ppf(self, q) {
+pub impl RVContinuous for Gamma with ppf(self, q) {
   if q <= 0.0 || q >= 1.0 {
     abort("q must be in (0, 1)")
   }
@@ -141,7 +122,7 @@ impl RVContinuous for Gamma with ppf(self, q) {
 }
 
 ///|
-impl RVContinuous for Gamma with sf(self, x) {
+pub impl RVContinuous for Gamma with sf(self, x) {
   if x <= 0.0 {
     return 1.0
   }
@@ -149,7 +130,7 @@ impl RVContinuous for Gamma with sf(self, x) {
 }
 
 ///|
-impl RVContinuous for Gamma with isf(self, q) {
+pub impl RVContinuous for Gamma with isf(self, q) {
   if q <= 0.0 || q >= 1.0 {
     abort("q must be in (0, 1)")
   }
@@ -157,22 +138,7 @@ impl RVContinuous for Gamma with isf(self, q) {
 }
 
 ///|
-impl RVContinuous for Gamma with logpdf(self, x) {
-  @math.ln(self.pdf(x))
-}
-
-///|
-impl RVContinuous for Gamma with logcdf(self, x) {
-  @math.ln(self.cdf(x))
-}
-
-///|
-impl RVContinuous for Gamma with logsf(self, x) {
-  @math.ln(self.sf(x))
-}
-
-///|
-impl RVContinuous for Gamma with moment(self, n) {
+pub impl RVContinuous for Gamma with moment(self, n) {
   if n < 0 {
     abort("moment order must be non-negative")
   }
@@ -185,27 +151,27 @@ impl RVContinuous for Gamma with moment(self, n) {
 }
 
 ///|
-impl RVContinuous for Gamma with mean(self) {
+pub impl RVContinuous for Gamma with mean(self) {
   self.k * self.theta
 }
 
 ///|
-impl RVContinuous for Gamma with median(self) {
+pub impl RVContinuous for Gamma with median(self) {
   self.ppf(0.5)
 }
 
 ///|
-impl RVContinuous for Gamma with varc(self) {
+pub impl RVContinuous for Gamma with varc(self) {
   self.k * self.theta * self.theta
 }
 
 ///|
-impl RVContinuous for Gamma with std(self) {
+pub impl RVContinuous for Gamma with std(self) {
   (self.k * self.theta * self.theta).sqrt()
 }
 
 ///|
-impl RVContinuous for Gamma with entropy(self) {
+pub impl RVContinuous for Gamma with entropy(self) {
   self.k +
   @math.ln(self.theta) +
   @kmath.ln_gamma(self.k) +
@@ -213,7 +179,7 @@ impl RVContinuous for Gamma with entropy(self) {
 }
 
 ///|
-impl RVContinuous for Gamma with interval(self, alpha : Double) {
+pub impl RVContinuous for Gamma with interval(self, alpha : Double) {
   if alpha <= 0.0 || alpha >= 1.0 {
     abort("alpha must be in (0, 1)")
   }
@@ -223,11 +189,11 @@ impl RVContinuous for Gamma with interval(self, alpha : Double) {
 }
 
 ///|
-impl RVContinuous for Gamma with skew(self) {
+pub impl RVContinuous for Gamma with skew(self) {
   2.0 / self.k.sqrt()
 }
 
 ///|
-impl RVContinuous for Gamma with kurt(self) {
+pub impl RVContinuous for Gamma with kurt(self) {
   6.0 / self.k
 }

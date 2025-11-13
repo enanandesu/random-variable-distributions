@@ -176,7 +176,7 @@ test "Bernoulli random sampling" {
   let seed = b"\x12\x34\x56\x78\x9a\xbc\xde\xf0\x11\x22\x33\x44\x55\x66\x77\x88\x99\xaa\xbb\xcc\xdd\xee\xff\x00\x01\x02\x03\x04\x05\x06\x07\x08"
 
   // Test sample generation
-  let samples = bernoulli.rvs(1000, Some(seed))
+  let samples = bernoulli.rvs(1000, rand=@random.Rand::chacha8(seed~))
   assert_eq(samples.length(), 1000)
 
   // All samples should be either 0 or 1

@@ -139,7 +139,7 @@ test "Binom random sampling" {
   let seed = b"\x12\x34\x56\x78\x9a\xbc\xde\xf0\x11\x22\x33\x44\x55\x66\x77\x88\x99\xaa\xbb\xcc\xdd\xee\xff\x00\x01\x02\x03\x04\x05\x06\x07\x08"
 
   // Test sample generation
-  let samples = binom.rvs(100, Some(seed))
+  let samples = binom.rvs(100, rand=@random.Rand::chacha8(seed~))
   assert_eq(samples.length(), 100)
 
   // All samples should be within valid range

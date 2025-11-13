@@ -202,8 +202,8 @@ test "BetaBinom rvs generates correct size" {
   let bb = BetaBinom::new(5, 2.0, 1.0)
   let samples = bb.rvs(
     100,
-    Some(
-      b"\x12\x34\x56\x78\x9a\xbc\xde\xf0\x11\x22\x33\x44\x55\x66\x77\x88\x99\xaa\xbb\xcc\xdd\xee\xff\x00\x01\x02\x03\x04\x05\x06\x07\x08",
+    rand=@random.Rand::chacha8(
+      seed=b"\x12\x34\x56\x78\x9a\xbc\xde\xf0\x11\x22\x33\x44\x55\x66\x77\x88\x99\xaa\xbb\xcc\xdd\xee\xff\x00\x01\x02\x03\x04\x05\x06\x07\x08",
     ),
   )
   assert_eq(samples.length(), 100)
@@ -223,17 +223,20 @@ test "BetaBinom rvs with different seeds" {
   let bb = BetaBinom::new(3, 1.0, 1.0)
   let samples1 = bb.rvs(
     50,
-    Some(
-      b"\x12\x34\x56\x78\x9a\xbc\xde\xf0\x11\x22\x33\x44\x55\x66\x77\x88\x99\xaa\xbb\xcc\xdd\xee\xff\x00\x01\x02\x03\x04\x05\x06\x07\x08",
+    rand=@random.Rand::chacha8(
+      seed=b"\x12\x34\x56\x78\x9a\xbc\xde\xf0\x11\x22\x33\x44\x55\x66\x77\x88\x99\xaa\xbb\xcc\xdd\xee\xff\x00\x01\x02\x03\x04\x05\x06\x07\x08",
     ),
   )
   let samples2 = bb.rvs(
     50,
-    Some(
-      b"\x12\x34\x56\x78\x9a\xbc\xde\xf0\x11\x22\x33\x44\x55\x66\x77\x88\x99\xaa\xbb\xcc\xdd\xee\xff\x00\x01\x02\x03\x04\x05\x06\x07\x08",
+    rand=@random.Rand::chacha8(
+      seed=b"\x12\x34\x56\x78\x9a\xbc\xde\xf0\x11\x22\x33\x44\x55\x66\x77\x88\x99\xaa\xbb\xcc\xdd\xee\xff\x00\x01\x02\x03\x04\x05\x06\x07\x08",
     ),
   )
-  let samples3 = bb.rvs(50, Some(b"12345678901234567890987654321012"))
+  let samples3 = bb.rvs(
+    50,
+    rand=@random.Rand::chacha8(seed=b"12345678901234567890987654321012"),
+  )
 
   // Same seed should produce same results
   for i in 0..<50 {
@@ -248,7 +251,10 @@ test "BetaBinom rvs with different seeds" {
     }
   }
   assert_true(differences > 10) // Should have many differences
-  let samples4 = bb.rvs(1000, Some(b"12345678901234567890987654321012"))
+  let samples4 = bb.rvs(
+    1000,
+    rand=@random.Rand::chacha8(seed=b"12345678901234567890987654321012"),
+  )
   let mut avg = 0.0
   for sample in samples4 {
     avg += sample

@@ -17,7 +17,7 @@ test {
   inspect(norm.std(), content="2.3")
   inspect(
     norm.interval(0.05),
-    content="(-1.307917164442122, 7.707917164442122)",
+    content="(-1.3079171644421237, 7.707917164442124)",
   )
   inspect(norm.skew(), content="0")
   inspect(norm.kurt(), content="0")
@@ -26,7 +26,8 @@ test {
 ///|
 test {
   let norm = Normal::new()
-  let arr = norm.rvs(10, Some(b"12345678912345678998765432101234"))
+  let seed = b"12345678912345678998765432101234"
+  let arr = norm.rvs(10, rand=@random.Rand::chacha8(seed~))
   inspect(
     arr,
     content="[-0.38205584043417495, -0.23346926482400399, 0.13253431184974715, -1.6397320023872184, -0.37927401482268985, 0.497241294990723, -0.22747079179606697, 0.24827860372961044, -1.3123383074025374, -0.5220240942281283]",
